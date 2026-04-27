@@ -5,8 +5,12 @@ import { useRouter } from "next/navigation"
 import FlashCard from "@/components/FlashCard"
 import { loadDecks } from "@/lib/storage"
 import { Flashcard } from "@/lib/types"
+import { useAuth } from "@/lib/auth-context"
+import { supabase } from "@/lib/supabase"
 
 export default function StudyPage() {
+    const { user, loading } = useAuth()
+
     const router = useRouter()
     const [cards, setCards] = useState<Flashcard[]>([])
     const [remaining, setRemaining] = useState<Flashcard[]>([])
@@ -15,24 +19,36 @@ export default function StudyPage() {
     const [finished, setFinished] = useState(false)
 
     useEffect(() => {
+        if (!loading && !user) {
+            router.push("/login")
+            return
+        }
+
         const deckId = localStorage.getItem("studyingDeckId")
         if (!deckId) {
-            router.push("/")
+            router.push("/decks")
             return
         }
 
-        const decks = loadDecks()
-        const deck = decks.find(d => d.id === deckId)
+        async function fetchDeck() {
+            const { data, error } = await supabase
+                .from("decks")
+                .select(`id, name, cards(id, question, answer)`)
+                .eq("id", deckId)
+                .single()
 
-        if (!deck) {
-            router.push("/")
-            return
+            if (error || !data) {
+                router.push("/decks")
+                return
+            }
+
+            setDeckName(data.name)
+            setCards(data.cards)
+            setRemaining(data.cards)
         }
 
-        setDeckName(deck.name)
-        setCards(deck.cards)
-        setRemaining(deck.cards)
-    }, [])
+        fetchDeck()
+    }, [user, loading])
 
     function handleGotIt() {
         const current = remaining[0]
@@ -88,7 +104,7 @@ export default function StudyPage() {
       <div className="flex items-center justify-between px-6 mb-4">
         <h2 className="font-semibold text-gray-700">{deckName}</h2>
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/decks")}
           className="text-sm text-gray-400 hover:text-gray-600"
         >
           Exit

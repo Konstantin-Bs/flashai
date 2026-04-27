@@ -1,26 +1,55 @@
-import { Deck } from "./types"
+import { supabase } from "./supabase";
+import { Deck, Flashcard } from "./types"
 
-export function saveDecks(decks: Deck[]): void {
-    localStorage.setItem("decks", JSON.stringify(decks))
-}
+export async function loadDecks(userId: string): Promise<Deck[]> {
+    const { data: decks, error } = await supabase
+        .from("decks")
+        .select(`id, name, created_at, cards(id, question, answer)`)
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false})
 
-export function loadDecks(): Deck[] {
-    const data = localStorage.getItem("decks")
-    return data ? JSON.parse(data) : []
-}
-
-export function saveDeck(deck: Deck): void {
-    const decks = loadDecks()
-    const existing = decks.findIndex(d => d.id === deck.id)
-    if (existing >= 0) {
-        decks[existing] = deck
-    } else {
-        decks.push(deck)
+    if (error) {
+        console.error(error)
+        return []
     }
-    saveDecks(decks)
+
+    return decks as Deck[]
 }
 
-export function deleteDeck(id: string): void {
-    const decks = loadDecks().filter(d => d.id !== id)
-    saveDecks(decks)
+export async function saveDeck(
+    userId: string,
+    name: string,
+    cards: Flashcard[]
+): Promise<void> {
+    const { data: deck, error: deckError } = await supabase
+        .from("decks")
+        .insert({ name, user_id: userId})
+        .select()
+        .single()
+
+    if (deckError || !deck) {
+        console.error(deckError)
+        return
+    }
+
+    const cardsToInsert = cards.map(card => ({
+        deck_id: deck.id,
+        question: card.question,
+        answer: card.answer,
+    }))
+
+    const { error: cardsError } = await supabase
+        .from("cards")
+        .insert(cardsToInsert)
+
+    if (cardsError) console.error(cardsError)
+}
+
+export async function deleteDeck(deckId: string): Promise<void> {
+    const { error } = await supabase
+        .from("decks")
+        .delete()
+        .eq("id", deckId)
+
+    if (error) console.error(error)
 }

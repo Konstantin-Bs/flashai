@@ -1,6 +1,7 @@
 import { google } from "@ai-sdk/google"
 import { generateObject } from "ai"
 import { z } from "zod"
+import { createClient } from "@/lib/supabase-server"
 
 const flashcardSchema = z.object({
     flashcards: z.array(
@@ -12,10 +13,19 @@ const flashcardSchema = z.object({
 })
 
 export async function POST(request: Request) {
+    const supabase = await createClient()
+    const { data: { user }, error } = await supabase.auth.getUser()
+
+    if (error || !user) {
+        return Response.json(
+            { error: "Unauthorized" },
+            { status: 401 }
+        )
+    }
+
     const { notes, count } = await request.json()
 
     try {
-        console.log("👉 BEFORE generateObject");
         const result = await generateObject({
             model: google("gemini-2.5-flash"),
             schema: flashcardSchema,
@@ -31,7 +41,6 @@ Notes:
 ${notes}`,
             maxRetries: 0,
     });
-    console.log("👉 AFTER generateObject");
 
     return Response.json({ flashcards: result.object.flashcards })
     } catch (error) {
