@@ -2,6 +2,7 @@ import { google } from "@ai-sdk/google"
 import { generateObject } from "ai"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase-server"
+import { extractTextFromFile } from "@/lib/extract"
 
 const flashcardSchema = z.object({
     flashcards: z.array(
@@ -23,7 +24,54 @@ export async function POST(request: Request) {
         )
     }
 
-    const { notes, count } = await request.json()
+    let notes: string
+    let count: number
+
+    const contentType = request.headers.get('content-type') || ''
+
+    if (contentType.includes('application/json')) {
+        const body = await request.json()
+        notes = body.notes
+        count = body.count
+    } else {
+        const formData = await request.formData()
+        const files = formData.getAll('files') as File[]
+        count = parseInt(formData.get('count') as string)
+
+        const allowedExtensions = ['.pdf', '.docx', '.txt', '.md']
+        const extractedTexts: string[] = []
+
+        for (const file of files) {
+            const extension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase()
+
+            if (!allowedExtensions.includes(extension)) {
+                return Response.json(
+                    { error: `Unsupported file type: ${file.name}` },
+                    { status: 400 }
+                )
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                return Response.json(
+                    { error: `File too large: ${file.name}` },
+                    { status: 400 }
+                )
+            }
+
+            const arrayBuffer = await file.arrayBuffer()
+            const buffer = Buffer.from(arrayBuffer)
+            const text = await extractTextFromFile(buffer, file.type, extension)
+
+            if (text.trim().length < 50) {
+                return Response.json(
+                    { error: `Could not extract text from ${file.name}. If it's a scanned PDF, please copy text manually instead.` },
+                    { status: 400 }
+                )
+            }
+            extractedTexts.push(text)
+        }
+        notes = extractedTexts.join('\n\n---\n\n')
+    }
 
     try {
         const result = await generateObject({
