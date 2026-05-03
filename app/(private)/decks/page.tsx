@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import GenerateForm from "@/components/GenerateForm"
-import { loadDecks, saveDeck, deleteDeck } from "@/lib/storage"
+import NameForm from "@/components/NameForm"
+import { loadDecks, deleteDeck } from "@/lib/storage"
 import { Deck, Flashcard } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
 import ProfilePanel from "@/components/ProfilePanel"
+import Link from "next/link"
 
 export default function Home() {
   const [showProfile, setShowProfile] = useState(false)
@@ -32,14 +33,6 @@ export default function Home() {
     }
   }, [user, loading])
 
-  async function handleCardsGenerated(cards: Flashcard[], deckName: string) {
-    if (!user) return
-      await saveDeck(user.id, deckName, cards)
-      const updated = await loadDecks(user.id)
-      setDecks(updated)
-      setShowForm(false)
-  }
-
   async function handleDelete(id: string) {
     await deleteDeck(id)
     if (user) {
@@ -62,7 +55,7 @@ export default function Home() {
         >
            ← Back
         </button>
-        <GenerateForm onCardsGenerated={handleCardsGenerated} />
+        <NameForm />
       </div>
     )
   }
@@ -110,6 +103,9 @@ export default function Home() {
               <p className="text-sm text-gray-400">{deck.cards.length} cards</p>
             </div>
             <div className="flex gap-3">
+              <Link href={`/decks/${deck.id}`}>
+                View
+              </Link>
               <button
                 onClick={() => handleDelete(deck.id)}
                 className="text-sm text-red-400 hover:text-red-600"

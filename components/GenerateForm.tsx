@@ -2,37 +2,45 @@
 
 import { useState, useRef } from "react"
 import { Flashcard } from "@/lib/types"
+import { addCardsToDeck } from "@/lib/storage"
 
 interface Props {
-    onCardsGenerated: (cards: Flashcard[], deckName: string) => void
+    deckId: string
+    onSuccess: () => void
 }
 
-export default function GenerateForm({ onCardsGenerated }: Props) {
+export default function GenerateForm({ deckId, onSuccess }: Props) {
     const [notes, setNotes] = useState("")
-    const [deckName, setDeckName] = useState("")
     const [count, setCount] = useState(3)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
-    const [input, setInput] = useState(true)
-
+    const [input, setInput] = useState(0)
     const [files, setFiles] = useState<File[]>([])
     const [drag, setDrag] = useState(false)
     const [fileError, setFileError] = useState("")
     const fileInputRef = useRef<HTMLInputElement>(null)
+    const [question, setQuestion] = useState("")
+    const [answer, setAnswer] = useState("")
 
     async function handleGenerate() {
-       if (!deckName.trim()) {
-        setError("Please enter a deck name")
-        return
-       }
 
-       if (input && !notes.trim()) {
+       if (input === 0 && !notes.trim()) {
         setError("Please enter your notes")
         return
        }
 
-       if (!input && files.length === 0) {
+       if (input === 1 && files.length === 0) {
         setError("Please add at least one file")
+        return
+       }
+
+       if (input === 2 && !question.trim()) {
+        setError("Please enter a question")
+        return
+       }
+
+       if (input === 2 && !answer.trim()) {
+        setError("Please enter an answer")
         return
        }
 
@@ -40,9 +48,15 @@ export default function GenerateForm({ onCardsGenerated }: Props) {
        setError("")
 
        try {
+        if (input === 2) {
+            await addCardsToDeck(deckId, [{ question, answer}])
+            onSuccess()
+            return
+        }
+
         let response
 
-        if (input) {
+        if (input === 0) {
             //text mode
             response = await fetch("/api/generate", {
                 method: "POST",
@@ -59,7 +73,7 @@ export default function GenerateForm({ onCardsGenerated }: Props) {
                 method: "POST",
                 body: formData,
             })
-        }
+        } 
 
         const data = await response.json()
 
@@ -68,20 +82,13 @@ export default function GenerateForm({ onCardsGenerated }: Props) {
             return
         }
 
-        onCardsGenerated(data.flashcards, deckName)
+        await addCardsToDeck(deckId, data.flashcards)
+        onSuccess()
        } catch (e) {
         setError("Something went wrong, please try again")
        } finally {
         setLoading(false)
        }
-    }
-
-    function handleTextInput() {
-        setInput(true);
-    }
-
-    function handleFileInput() {
-        setInput(false);
     }
 
     function validateAndSetFiles(newFiles: File[]) {
@@ -120,27 +127,30 @@ export default function GenerateForm({ onCardsGenerated }: Props) {
             <h1 className="text-2x1 font-bold">Generate Flashcards</h1>
 
             <div>
-                <button onClick={handleTextInput}
-                        disabled={input}
-                        className="bg-blue-500 text-white rounded p-2 font-semibold disabled:opacity-50">
+                <button 
+                    onClick={() => setInput(0)}
+                    disabled={input === 0}
+                    className="bg-blue-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                >
                     Paste Text
                 </button>
-                <button onClick={handleFileInput}
-                        disabled={!input}
-                        className="bg-red-500 text-white rounded p-2 font-semibold disabled:opacity-50">
+                <button 
+                    onClick={() => setInput(1)}
+                    disabled={input === 1}
+                    className="bg-red-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                >
                     Upload File
+                </button>
+                <button 
+                    onClick={() => setInput(2)}
+                    disabled={input === 2}
+                    className="bg-green-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                >
+                    Own Card
                 </button>
             </div>
 
-            <input
-                type="text"
-                placeholder="Deck name"
-                value={deckName}
-                onChange={e => setDeckName(e.target.value)}
-                className="border rounded p-2 w-full"
-            />
-
-            {input && (
+            {input === 0 && (
             <div>
             <textarea
                 placeholder="Paste your notes here..."
@@ -152,7 +162,7 @@ export default function GenerateForm({ onCardsGenerated }: Props) {
             </div>
             )}
 
-            {!input && (
+            {input === 1 && (
                 <div>
                     <div
                         onClick={() => fileInputRef.current?.click()}
@@ -210,7 +220,30 @@ export default function GenerateForm({ onCardsGenerated }: Props) {
                 </div>
             )}
 
-            <select
+            {input === 2 && (
+                <div>
+                    <div>
+                        <textarea
+                            placeholder="Write your question here..."
+                            value={question}
+                            onChange={e => setQuestion(e.target.value)}
+                            rows={8}
+                            className="border rounded p-2 w-full resize-none"
+                        />
+                    </div>
+                    <div>
+                        <textarea
+                            placeholder="Write your answer here..."
+                            value={answer}
+                            onChange={e => setAnswer(e.target.value)}
+                            rows={8}
+                            className="border rounded p-2 w-full resize-none"
+                        />
+                    </div>
+                </div>
+            )}
+
+            {input !== 2 && (<select
                 value={count}
                 onChange={e => setCount(Number(e.target.value))}
                 className="border rounded p-2 w-full"
@@ -219,17 +252,27 @@ export default function GenerateForm({ onCardsGenerated }: Props) {
                 <option value={10}>10 Cards</option>
                 <option value={20}>20 Cards</option>
                 <option value={30}>30 Cards</option>
-            </select>
+            </select>)}
 
             {error && <p className="text-red-500">{error}</p>}
 
-            <button
-                onClick={handleGenerate}
-                disabled={loading}
-                className="bg-blue-500 text-white rounded p-2 font-semibold disabled:opacity-50"
-            >
-                {loading ? "Generating..." : "Generate Flashcards"}
-            </button>
+            {input === 2 ? (
+                <button
+                    onClick={handleGenerate}
+                    disabled={loading}
+                    className="bg-blue-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                >
+                    {loading ? "Generating..." : "Add Flashcard"}
+                </button>
+            ) : (
+                <button
+                    onClick={handleGenerate}
+                    disabled={loading}
+                    className="bg-blue-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                >
+                    {loading ? "Generating..." : "Generate Flashcards"}
+                </button>
+            )}
         </div>
     )
-}
+}   

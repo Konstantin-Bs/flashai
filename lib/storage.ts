@@ -16,35 +16,6 @@ export async function loadDecks(userId: string): Promise<Deck[]> {
     return decks as Deck[]
 }
 
-export async function saveDeck(
-    userId: string,
-    name: string,
-    cards: Flashcard[]
-): Promise<void> {
-    const { data: deck, error: deckError } = await supabase
-        .from("decks")
-        .insert({ name, user_id: userId})
-        .select()
-        .single()
-
-    if (deckError || !deck) {
-        console.error(deckError)
-        return
-    }
-
-    const cardsToInsert = cards.map(card => ({
-        deck_id: deck.id,
-        question: card.question,
-        answer: card.answer,
-    }))
-
-    const { error: cardsError } = await supabase
-        .from("cards")
-        .insert(cardsToInsert)
-
-    if (cardsError) console.error(cardsError)
-}
-
 export async function deleteDeck(deckId: string): Promise<void> {
     const { error } = await supabase
         .from("decks")
@@ -52,4 +23,38 @@ export async function deleteDeck(deckId: string): Promise<void> {
         .eq("id", deckId)
 
     if (error) console.error(error)
+}
+
+export async function createDeck(userId: string, name: string) : Promise<string | null> {
+    const { data: deck, error: deckError } = await supabase
+        .from("decks")
+        .insert({name, user_id: userId})
+        .select()
+        .single()
+
+    if (deckError || !deck) {
+        console.error(deckError)
+        return null
+    }
+
+    return deck.id
+}
+
+export async function addCardsToDeck(deckId: string, cards: Flashcard[]) : Promise<boolean> {
+    const cardsToInsert = cards.map(card => ({
+        deck_id: deckId,
+        question: card.question,
+        answer: card.answer,
+    }))
+    
+    const { error } = await supabase
+        .from("cards")
+        .insert(cardsToInsert)
+
+    if (error) {
+        console.error(error)
+        return false
+    }
+    return true
+
 }
