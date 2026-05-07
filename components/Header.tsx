@@ -1,7 +1,7 @@
 "use client"
 
 import { useAuth } from "@/lib/auth-context"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import ProfilePanel from "./ProfilePanel"
 import { usePathname } from "next/navigation"
@@ -13,7 +13,13 @@ export function Header() {
     const { user, loading } = useAuth()
     const router = useRouter()
     const [showProfile, setShowProfile] = useState(false)
-    const { theme, setTheme } = useTheme()
+    const { resolvedTheme, setTheme } = useTheme()
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
     const pathname = usePathname()
     const hideHeader = ["/login", "/register"].includes(pathname)
 
@@ -38,8 +44,8 @@ export function Header() {
                             </Link>
                         </div>
                         <div className="flex items-center gap-5">
-                            <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="cursor-pointer">
-                                {theme === "dark" ? <Sun size={25} strokeWidth={1}/> : <Moon size={25} strokeWidth={1}/>}
+                            <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} className="cursor-pointer">
+                                {mounted ? (resolvedTheme === "dark" ? <Sun size={25} strokeWidth={1}/> : <Moon size={25} strokeWidth={1}/>) : <Sun size={25} strokeWidth={1}/>}
                             </button>
                             <button
                                 onClick={() => setShowProfile(true)}
@@ -57,8 +63,8 @@ export function Header() {
                             </Link>
                         </div>
                         <div className="flex items-center gap-5">
-                            <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="cursor-pointer">
-                                {theme === "dark" ? <Sun size={25} strokeWidth={1}/> : <Moon size={25} strokeWidth={1}/>}
+                            <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} className="cursor-pointer">
+                                {mounted ? (resolvedTheme === "dark" ? <Sun size={25} strokeWidth={1}/> : <Moon size={25} strokeWidth={1}/>) : <Sun size={25} strokeWidth={1}/>}
                             </button>
                             <button
                                 onClick={handleSignIn}
