@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation"
 import ProfilePanel from "./ProfilePanel"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { UserRound } from "lucide-react"
+import { UserRound, Sun, Moon } from "lucide-react"
+import { useTheme } from "next-themes"
 
 export function Header() {
     const { user, loading } = useAuth()
     const router = useRouter()
     const [showProfile, setShowProfile] = useState(false)
-
+    const { theme, setTheme } = useTheme()
     const pathname = usePathname()
     const hideHeader = ["/login", "/register"].includes(pathname)
 
@@ -36,7 +37,10 @@ export function Header() {
                                 Logo/Home
                             </Link>
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center gap-5">
+                            <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="cursor-pointer">
+                                {theme === "dark" ? <Sun size={25} strokeWidth={1}/> : <Moon size={25} strokeWidth={1}/>}
+                            </button>
                             <button
                                 onClick={() => setShowProfile(true)}
                                 className="w-9 h-9 rounded-full border border-slate-950 dark:border-white bg-white text-slate-950 dark:bg-slate-950 dark:text-white hover:opacity-70 font-medium flex items-center justify-center cursor-pointer"
