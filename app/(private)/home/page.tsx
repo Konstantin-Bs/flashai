@@ -1,14 +1,12 @@
 "use client"
 
 import { useAuth } from "@/lib/auth-context"
-import ProfilePanel from "@/components/ProfilePanel"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function Home() {
     const { user, loading } = useAuth()
     const router = useRouter()
-    const [showProfile, setShowProfile] = useState(false)
 
     useEffect(() => {
         if (!loading && !user) {
@@ -23,21 +21,14 @@ export default function Home() {
 
     return(
         <div>
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-center mt-55">
             <button
                 onClick={handleDecks}
-                className="bg-black text-white rounded p-2 font-medium disabled:opacity-50"
+                className="text-8xl border-2 border-black dark:border-white/30 hover:border-slate-900 dark:hover:border-transparent font-Bold rounded-2xl hover:bg-gray-400 dark:hover:bg-slate-800 p-7"
             >
                 My Decks
             </button>
-            <button
-            onClick={() => setShowProfile(true)}
-            className="w-9 h-9 rounded-full bg-black text-white text-sm font-medium flex items-center justify-center"
-            >
-            {user?.email?.[0].toUpperCase()}
-            </button>
         </div>
-        {showProfile && <ProfilePanel onClose={() => setShowProfile(false)} />}
         </div>
     )
 }

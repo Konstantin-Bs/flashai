@@ -15,28 +15,21 @@ export default function Home() {
         }
     }, [user, loading])
 
-    function handleSignIn() {
-        router.push("/login")
-    }
-
     function handleSignUp() {
         router.push("/register")
     }
 
     return (
-        <div>
-            <h1>Login/Register here</h1>
-            <button
-                onClick={handleSignIn}
-                className="bg-black text-white rounded p-2 font-medium disabled:opacity-50"
-            >
-                SignIn
-            </button>
-            <button
+        <div className="flex flex-col items-center justify-center mt-32 max-w-full gap-12">
+            <h1 className="text-8xl text-center font-sans">
+                Welcome to
+                <span className="block">AppName</span>
+            </h1>
+            <button 
                 onClick={handleSignUp}
-                className="bg-black text-white rounded p-2 font-medium disabled:opacity-50"
+                className="text-4xl font-sans rounded-2xl p-3.5 bg-blue-600/85 hover:bg-blue-600 cursor-pointer"
             >
-                SignUp
+                Sign Up
             </button>
         </div>
     )

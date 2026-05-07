@@ -1,5 +1,6 @@
 import { AuthProvider } from "@/lib/auth-context"
 import { Footer } from "@/components/Footer"
+import { Header } from "@/components/Header"
 import type { Metadata } from "next"
 import "./globals.css"
 
@@ -14,10 +15,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" className="dark">
+      <body className="bg-white dark:bg-slate-950 min-h-screen pt-16 text-slate-950 dark:text-white flex flex-col">
         <AuthProvider>
-          {children}
+          <Header/>
+          <div className="flex-1">
+            {children}
+          </div>
           <Footer/>
         </AuthProvider>
       </body>

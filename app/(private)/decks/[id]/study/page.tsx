@@ -1,16 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, use } from "react"
 import { useRouter } from "next/navigation"
 import FlashCard from "@/components/FlashCard"
-import { loadDecks } from "@/lib/storage"
 import { Flashcard } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
 import { supabase } from "@/lib/supabase"
+import { X, Layers, Check, PartyPopper } from "lucide-react"
 
-export default function StudyPage() {
+export default function StudyPage({ params }: { params: Promise<{ id: string }> }) {
     const { user, loading } = useAuth()
-
+    const { id } = use(params)
     const router = useRouter()
     const [cards, setCards] = useState<Flashcard[]>([])
     const [remaining, setRemaining] = useState<Flashcard[]>([])
@@ -24,7 +24,7 @@ export default function StudyPage() {
             return
         }
 
-        const deckId = localStorage.getItem("studyingDeckId")
+        const deckId = id
         if (!deckId) {
             router.push("/decks")
             return
@@ -45,6 +45,10 @@ export default function StudyPage() {
             setDeckName(data.name)
             setCards(data.cards)
             setRemaining(data.cards)
+
+            if (data.cards.length === 0) {
+                router.push("/decks")
+            }
         }
 
         fetchDeck()
@@ -77,18 +81,18 @@ export default function StudyPage() {
     if (finished) {
         return (
         <div className="flex flex-col items-center gap-6 p-6 max-w-2xl mx-auto mt-20">
-            <h1 className="text-3xl font-bold">🎉 Done!</h1>
+            <h1 className="text-3xl font-bold"><PartyPopper size={30} className="inline"/> Done!</h1>
             <p className="text-gray-500">You got through all cards in {deckName}</p>
             <div className="flex gap-4">
                 <button
                     onClick={handleRestart}
-                    className="border-2 rounded-xl p-3 px-6 font-semibold hover:bg-gray-50"
+                    className="border-2 rounded-xl p-3 px-6 font-semibold hover:bg-gray-800 cursor-pointer"
                 >
                     Study Again
                 </button>
                 <button
-                    onClick={() => router.push("/")}
-                    className="bg-blue-500 text-white rounded-xl p-3 px-6 font-semibold"
+                    onClick={() => router.push("/decks")}
+                    className="bg-blue-600 rounded-xl p-3 px-6 font-semibold hover:bg-blue-500 cursor-pointer"
                 >
                     Back Home
                 </button>
@@ -100,23 +104,23 @@ export default function StudyPage() {
     if (remaining.length === 0) return null
 
     return (
-    <div className="max-w-2xl mx-auto mt-10">
+    <div className="max-w-3xl mx-auto mt-10">
       <div className="flex items-center justify-between px-6 mb-4">
-        <h2 className="font-semibold text-gray-700">{deckName}</h2>
+        <h2 className="font-semibold text-2xl">{deckName}</h2>
         <button
           onClick={() => router.push("/decks")}
-          className="text-sm text-gray-400 hover:text-gray-600"
+          className="text-sm hover:text-gray-500 cursor-pointer"
         >
-          Exit
+          <X size={25} />
         </button>
       </div>
 
       <div className="flex gap-2 px-6 mb-6">
         <div className="text-sm text-gray-500">
-          ✅ {gotIt.length} got it
+          <Check size={20} className="inline mr-1"/> {gotIt.length} got it
         </div>
         <div className="text-sm text-gray-500 ml-4">
-          📚 {remaining.length} remaining
+          <Layers size={20} className="inline mr-1"/> {remaining.length} remaining
         </div>
       </div>
 

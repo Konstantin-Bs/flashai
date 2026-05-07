@@ -1,15 +1,17 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Flashcard } from "@/lib/types"
 import { addCardsToDeck } from "@/lib/storage"
+import { X } from "lucide-react"
 
 interface Props {
     deckId: string
     onSuccess: () => void
+    onClose: () => void
 }
 
-export default function GenerateForm({ deckId, onSuccess }: Props) {
+export default function GenerateForm({ deckId, onSuccess, onClose }: Props) {
     const [notes, setNotes] = useState("")
     const [count, setCount] = useState(3)
     const [loading, setLoading] = useState(false)
@@ -21,6 +23,17 @@ export default function GenerateForm({ deckId, onSuccess }: Props) {
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [question, setQuestion] = useState("")
     const [answer, setAnswer] = useState("")
+
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout (() => setError(""), 2000)
+            return () => clearTimeout(timer)
+        }
+        if (fileError) {
+            const timer = setTimeout(() => setFileError(""), 2000)
+            return () => clearTimeout(timer)
+        }
+    }, [error, fileError])
 
     async function handleGenerate() {
 
@@ -123,28 +136,27 @@ export default function GenerateForm({ deckId, onSuccess }: Props) {
     }
 
     return (
-        <div className="flex flex-col gap-4 max-w-2x1 mx-auto p-6">
-            <h1 className="text-2x1 font-bold">Generate Flashcards</h1>
-
-            <div>
+        <div className="flex flex-col max-w-5xl mx-auto p-6">
+            <button onClick={onClose} className="flex justify-center hover:text-gray-500"><X/></button>
+            <div className="mt-8 mb-1 flex gap-1">
                 <button 
                     onClick={() => setInput(0)}
                     disabled={input === 0}
-                    className="bg-blue-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                    className="rounded-md p-2 font-semibold transition transition-discrete duration-200 ease-in-out disabled:opacity-100 disabled:bg-gray-600 hover:opacity-100 hover:bg-gray-600"
                 >
                     Paste Text
                 </button>
                 <button 
                     onClick={() => setInput(1)}
                     disabled={input === 1}
-                    className="bg-red-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                    className="rounded-md p-2 font-semibold transition transition-discrete duration-200 ease-in-out disabled:opacity-100 disabled:bg-gray-600 hover:opacity-100 hover:bg-gray-600"
                 >
                     Upload File
                 </button>
                 <button 
                     onClick={() => setInput(2)}
                     disabled={input === 2}
-                    className="bg-green-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                    className="rounded-md p-2 font-semibold transition transition-discrete duration-200 ease-in-out disabled:opacity-100 disabled:bg-gray-600 hover:opacity-100 hover:bg-gray-600"
                 >
                     Own Card
                 </button>
@@ -157,7 +169,7 @@ export default function GenerateForm({ deckId, onSuccess }: Props) {
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 rows={8}
-                className="border rounded p-2 w-full resize-none"
+                className="border rounded-md p-2 w-full resize-none"
             />
             </div>
             )}
@@ -176,7 +188,7 @@ export default function GenerateForm({ deckId, onSuccess }: Props) {
                             if (dropped.length > 0) validateAndSetFiles(dropped)
                         }}
                         className={`border-2 rounded p-8 w-full text-center cursor-pointer transition-colors ${
-                            drag ? 'border-blue-500 bg-blue-50' : 'border-dashed border-gray-300'
+                            drag ? 'border-blue-500 bg-gray-500' : 'border-dashed border-gray-300'
                             }`}
                     >
                         {files.length > 0 ? (
@@ -246,12 +258,12 @@ export default function GenerateForm({ deckId, onSuccess }: Props) {
             {input !== 2 && (<select
                 value={count}
                 onChange={e => setCount(Number(e.target.value))}
-                className="border rounded p-2 w-full"
+                className="border dark:border-white/70 rounded-md p-2 w-full mb-3 mt-3 hover:opacity-70"
             >
-                <option value={3}>3 Cards</option>
-                <option value={10}>10 Cards</option>
-                <option value={20}>20 Cards</option>
-                <option value={30}>30 Cards</option>
+                <option value={3} className="dark:bg-slate-800">3 Cards</option>
+                <option value={10} className="dark:bg-slate-800">10 Cards</option>
+                <option value={20} className="dark:bg-slate-800">20 Cards</option>
+                <option value={30} className="dark:bg-slate-800">30 Cards</option>
             </select>)}
 
             {error && <p className="text-red-500">{error}</p>}
@@ -260,7 +272,7 @@ export default function GenerateForm({ deckId, onSuccess }: Props) {
                 <button
                     onClick={handleGenerate}
                     disabled={loading}
-                    className="bg-blue-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                    className="bg-blue-500 rounded-md p-2 font-semibold disabled:opacity-70 hover:opacity-70"
                 >
                     {loading ? "Generating..." : "Add Flashcard"}
                 </button>
@@ -268,7 +280,7 @@ export default function GenerateForm({ deckId, onSuccess }: Props) {
                 <button
                     onClick={handleGenerate}
                     disabled={loading}
-                    className="bg-blue-500 text-white rounded p-2 font-semibold disabled:opacity-50"
+                    className="bg-blue-500 rounded-md p-2 font-semibold disabled:opacity-70 hover:opacity-70"
                 >
                     {loading ? "Generating..." : "Generate Flashcards"}
                 </button>

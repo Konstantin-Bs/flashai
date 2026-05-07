@@ -6,11 +6,10 @@ import NameForm from "@/components/NameForm"
 import { loadDecks, deleteDeck } from "@/lib/storage"
 import { Deck, Flashcard } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
-import ProfilePanel from "@/components/ProfilePanel"
 import Link from "next/link"
+import { Plus } from "lucide-react"
 
 export default function Home() {
-  const [showProfile, setShowProfile] = useState(false)
   const { user, loading } = useAuth()
 
   const router = useRouter()
@@ -41,45 +40,31 @@ export default function Home() {
     }
   }
 
-  function handleStudy(id: string) {
-    localStorage.setItem("studyingDeckId", id)
-    router.push("/study")
+  function handleStudy(id: string, cardsCount: number) {
+    if (cardsCount === 0) {
+      return
+    }
+    router.push(`/decks/${id}/study`)
   }
 
-  if (showForm) {
-    return (
-      <div className="max-w-2x1 mx-auto mt-10">
-        <button
-          onClick={() => setShowForm(false)}
-          className="text-sm text-gray-400 hover:text-gray-600 ml-6 mb-4"
-        >
-           ← Back
-        </button>
-        <NameForm />
-      </div>
-    )
+  function handleDecksList(id: string) {
+    router.push(`/decks/${id}`)
   }
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">My Decks</h1>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowProfile(true)}
-            className="w-9 h-9 rounded-full bg-black text-white text-sm font-medium flex items-center justify-center"
-          >
-            {user?.email?.[0].toUpperCase()}
-          </button>
+      <div className="flex justify-between items-center mb-5">
+        <h1 className="text-3xl font-semibold">My Decks:</h1>
+        <div>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-black text-white rounded-xl p-3 px-6 font-semibold hover:bg-gray-800 transition-colors"
+            className="bg-blue-800 hover:text-white/85 text-white rounded-xl p-4 font-semibold hover:bg-blue-600/50 transition-colors flex items-center gap-1.5"
           >
-            + New Deck
+            <Plus size={20} strokeWidth={2}/>
+            Add Deck
           </button>
         </div>
       </div>
-      {showProfile && <ProfilePanel onClose={() => setShowProfile(false)} />}
 
       {loadingDecks && (
         <p className="text-gray-400 text-center mt-20">Loading decks...</p>
@@ -96,25 +81,23 @@ export default function Home() {
         {decks.map(deck => (
           <div
             key={deck.id}
-            className="border-2 rounded-xl p-5 flex items-center justify-between hover:bg-gray-50 transition-colors"
+            className="rounded-xl p-5 flex items-center justify-between border border-black dark:border-white/30 dark:bg-slate-900 hover:bg-gray-400 dark:hover:bg-slate-800 transition-colors"
+            onClick={() => handleDecksList(deck.id)}
           >
             <div>
               <h2 className="font-semibold text-lg">{deck.name}</h2>
               <p className="text-sm text-gray-400">{deck.cards.length} cards</p>
             </div>
-            <div className="flex gap-3">
-              <Link href={`/decks/${deck.id}`}>
-                View
-              </Link>
+            <div className="flex gap-4.5">
               <button
-                onClick={() => handleDelete(deck.id)}
+                onClick={(e) => {e.stopPropagation(); handleDelete(deck.id)}}
                 className="text-sm text-red-400 hover:text-red-600"
               >
                 Delete
               </button>
               <button
-                onClick={() => handleStudy(deck.id)}
-                className="bg-black text-white rounded-lg p-2 px-4 text-sm font-semibold hover:bg-gray-800 transition-colors"
+                onClick={(e) => {e.stopPropagation(); handleStudy(deck.id, deck.cards.length)}}
+                className="bg-slate-700 text-white rounded-lg p-2 px-4 text-sm font-semibold hover:bg-slate-800 border border-transparent hover:border-white/30 transition-colors"
               >
                 Study
               </button>
@@ -122,6 +105,7 @@ export default function Home() {
           </div>
         ))}
       </div>
+      {showForm && <NameForm onClose={() => setShowForm(false)} />}
     </div>
   )
 }

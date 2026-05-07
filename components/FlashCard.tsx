@@ -30,7 +30,7 @@ export default function FlashCard({ card, index, total, onGotIt, onStillLearning
 
             <div
                 onClick={() => setFlipped(!flipped)}
-                className="w-full min-h-48 border-2 rounded-x1 p-8 cursor pointer flex items-center justify-center text-center text-lg font-medium hover:bg-gray-50 transition-colors"
+                className="w-full min-h-48 border-2 rounded-md rounded-x1 p-8 cursor pointer flex items-center justify-center text-center text-lg font-medium dark:bg-gray-800 dark:hover:bg-gray-700 hover:bg-gray-50 transition-colors"
             >
                 {flipped ? card.answer : card.question}
             </div>
@@ -40,16 +40,16 @@ export default function FlashCard({ card, index, total, onGotIt, onStillLearning
             </p>
 
             {flipped && (
-                <div className="flex gap-4 w-full">
+                <div className="flex gap-4 w-lg">
                     <button
                         onClick={handleStillLearning}
-                        className="flex-1 border-2 border-red-300 text-red-500 rounded-x1 p-3 font-semibold hover:bg-red-50 transition-colors"
+                        className="flex-1 rounded-md p-2 py-3 bg-red-600 hover:bg-red-700"
                     >
                         Still Learning
                     </button>
                     <button
                         onClick={handleGotIt}
-                        className="flex-1 border-2 border-green-300 text-green-500 rounded-x1 p-3 font-semibold hover:bg-green-50 transition-colors"
+                        className="flex-1 rounded-md p-2 py-3 bg-green-600 hover:bg-green-700"
                     >
                         Got It
                     </button>

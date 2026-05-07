@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation"
 import { signOut } from "@/lib/auth"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/lib/auth-context"
+import { Settings, LogOut } from "lucide-react"
 
 interface Props {
     onClose: () => void
 }
 
 export default function ProfilePanel({ onClose }: Props) {
-    const { user } = useAuth()
+    const { user, loading } = useAuth()
     const router = useRouter()
     const panelRef = useRef<HTMLDivElement>(null)
 
@@ -27,6 +28,8 @@ export default function ProfilePanel({ onClose }: Props) {
 
     async function handleLogout() {
         await signOut()
+        
+        onClose()
         router.push("/login")
     }
 
@@ -48,46 +51,38 @@ export default function ProfilePanel({ onClose }: Props) {
     return (
         <div className="fixed inset-0 z-50">
             {/* backdrop */}
-            <div className="absolute inset-0 bg-black/20" />
+            <div className="absolute inset-0" />
 
             {/* panel */}
             <div
                 ref={panelRef}
-                className="absolute right-0 top-0 h-full w-72 bg-white shadow-lg flex flex-col p-6 gap-4"
+                className="absolute right-4 top-20 h-auto rounded-xl w-60 bg-white dark:bg-slate-950 border border-slate-950 dark:border-white/30 shadow-lg flex flex-col p-2 gap-2"
             >
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="font-semibold text-lg">Profile</h2>
-                    <button
-                        onClick={onClose}
-                        className="text-gray-400 hover:text-black text-xl"
-                    >
-                        ✕
-                    </button>
-                </div>
+                <p className="text-sm text-center break-all p-1">{user?.email}</p>
 
-                <p className="text-sm text-gray-500 break-all">{user?.email}</p>
-
-                <hr />
+                <div className="border-t border-black dark:border-white/30"/>
 
                 <button
                     onClick={() => alert("Settings coming soon")}
-                    className="text-left text-sm font-medium hover:text-gray-600"
+                    className="w-full text-left text-sm p-1 rounded-md border border-transparent hover:border-slate-950 dark:hover:border-white/30 transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
+                    <Settings size={16}/>
                     Settings
                 </button>
 
-                <hr />
+                <div className="border-t border-black dark:border-white/30"/>
 
                 <div className="mt-auto flex flex-col gap-3">
                     <button
                         onClick={handleLogout}
-                        className="w-full border rounded p-2 text-sm font-medium hover:bg-gray-50"
+                        className="w-full text-left rounded-md p-1 text-sm border border-transparent hover:border-gray-500 dark:hover:border-white/30 transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
-                        Logout
+                        <LogOut size={16}/>
+                        Sign out
                     </button>
                     <button
                         onClick={handleDeleteAccount}
-                        className="w-full border border-red-300 text-red-500 rounded p-2 text-sm font-medium hover:bg-red-50"
+                        className="w-full text-sm p-1 rounded-md border border-red-500 text-red-500 hover:bg-gray-500 dark:hover:bg-slate-800 cursor-pointer"
                     >
                         Delete Account
                     </button>

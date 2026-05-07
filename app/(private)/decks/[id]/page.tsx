@@ -6,6 +6,7 @@ import { supabase } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import GenerateForm from "@/components/GenerateForm"
+import { Pencil, Check, Trash2, ArrowLeft } from "lucide-react"
 
 export default function DeckDetailPage({ params }: { params: Promise<{ id: string }> }) {
 
@@ -88,77 +89,86 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
 
   if (showForm) {
       return (
-        <div className="max-w-2x1 mx-auto mt-10">
-          <button
-            onClick={() => setShowForm(false)}
-            className="text-sm text-gray-400 hover:text-gray-600 ml-6 mb-4"
-          >
-             ← Back
-          </button>
-          <GenerateForm deckId={id} onSuccess={handleSuccess} />
+        <div>
+          <GenerateForm deckId={id} onSuccess={handleSuccess} onClose={() => setShowForm(false)}/>
         </div>
       )
     }
 
   return (
-  <div>
-    {!isEditingName && (
-      <div>
-        <h1>{deckName}</h1>
-        <button onClick={handleIsEditingName}>
-          editname
-        </button>
-      </div>
-    )}
-    {isEditingName && (
-      <div>
-        <input
-          value={editedName}
-          onChange={e => setEditedName(e.target.value)}
-        />
-        <button onClick={handleEditName}>
-          editname
-        </button>
-      </div>
-    )}
-    <p>{cards.length} cards</p>
-    <table>
+  <div className="max-w-6xl mx-auto p-6">
+    <div className="flex items-center justify-between pb-3">
+      <button 
+        className="hover:text-gray-400 cursor-pointer"
+        onClick={() => router.push("/decks")}
+      >
+        <ArrowLeft/>
+      </button>
+      {!isEditingName && (
+        <div className="flex items-center gap-3.5 pl-2">
+          <h1 className="text-xl pl-0.5 cursor-default">{deckName}</h1>
+          <button onClick={handleIsEditingName} className="rounded-sm bg-gray-800 hover:bg-slate-900 p-1 cursor-pointer">
+            <Pencil size={15}/>
+          </button>
+        </div>
+      )}
+      {isEditingName && (
+        <div className="flex items-center gap-3.5 pl-2">
+          <input
+            value={editedName}
+            onChange={e => setEditedName(e.target.value)}
+            className="text-xl border rounded-md pl-0.5"
+            size={15}
+          />
+          <button onClick={handleEditName} className="rounded-sm bg-green-600 hover:bg-green-700 p-1 cursor-pointer">
+            <Check size={15}/>
+          </button>
+        </div>
+      )}
+      <p>{cards.length} cards</p>
+    </div>
+    <table className="w-full border-collapse">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Question</th>
-          <th>Answer</th>
-          <th></th>
+          <th className="border border-black dark:border-white/30 p-2">#</th>
+          <th className="border border-black dark:border-white/30 p-2 text-left">Question</th>
+          <th className="border border-black dark:border-white/30 p-2 text-left">Answer</th>
+          <th className="border border-black dark:border-white/30 p-2 text-left"></th>
         </tr>
       </thead>
       <tbody>
         {cards.length === 0 ? (
           <tr>
-            <td colSpan={4} className="text-center text-gray-400 py-8">
+            <td colSpan={4} className="text-center py-8">
               No cards yet
             </td>
           </tr>
         ) : (
         cards.map((card, index) => (
-          <tr key={card.id}>
-            <td>{index + 1}</td>
-            <td>{card.question}</td>
-            <td>{card.answer}</td>
-            <td>
+          <tr key={card.id} className="bg-slate-900">
+            <td className="border border-black dark:border-white/10 p-2 text-center">{index + 1}</td>
+            <td className="border border-black dark:border-white/10 p-2">{card.question}</td>
+            <td className="border border-black dark:border-white/10 p-2">{card.answer}</td>
+            <td className="border border-black dark:border-white/10 p-2">
               <button
                 onClick={() => handleDeleteCard(card.id)}
-                className="w-full border border-red-300 text-red-500 rounded p-2 text-sm font-medium hover:bg-red-50"
+                className="w-full border border-transparent rounded p-2 cursor-pointer text-red-500 hover:text-red-700"
               >
-                Delete Card
+                <Trash2/>
               </button>
             </td>
           </tr>
         )))}
       </tbody>
     </table>
-    <button onClick={() => setShowForm(true)}>
-      Add Cards
-    </button>
+    <div className="flex justify-center mt-4">
+      <button 
+        onClick={() => setShowForm(true)}
+        className="rounded-md py-3 px-10 text-2xl font-semibold text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
+      >
+        Add Cards
+      </button>
+    </div>
   </div>
 )
 }
