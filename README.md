@@ -100,6 +100,7 @@ Open [http://localhost:3000](http://localhost:3000)
 
 ## Project Structure
 
+```
 /app
   /(private)        → authenticated pages (home, decks, study)
   /login            → login page
@@ -109,6 +110,7 @@ Open [http://localhost:3000](http://localhost:3000)
 /components         → reusable UI components
 /lib                → utilities, Supabase client, auth context
 /public             → static assets
+```
 
 ---
 
