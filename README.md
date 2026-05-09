@@ -13,6 +13,14 @@ AI-powered flashcard generator. Paste your notes or upload a PDF - FlashAI gener
 
 ---
 
+## Screenshot
+
+| Decks | Study Mode |
+|---|---|
+| ![Decks](./screenshots/decks.png) | ![Study](./screenshots/study.png) |
+
+---
+
 ## Features
 
 - **AI Generation** — Generate flashcards from pasted text or uploaded files using Google Gemini 2.5 Flash
