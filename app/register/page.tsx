@@ -46,30 +46,33 @@ export default function RegisterPage() {
             </div>
             <div>
                 <div className="flex flex-col gap-4">
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        value={email}
-                        onChange={e => setEmail(e.target.value)}
-                        className="border border-black dark:border-white/30 rounded p-2.5 w-full"
-                    /> 
-                    <input
-                        type="password"
-                        placeholder="Password (min. 8 characters)"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        className="border border-black dark:border-white/30 rounded p-2.5 w-full"
-                    />
+                    <form onSubmit={e => {e.preventDefault(); handleRegister()}} className="flex flex-col gap-4">
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            className="border border-black dark:border-white/30 rounded p-2.5 w-full"
+                        /> 
+                        <input
+                            type="password"
+                            placeholder="Password (min. 8 characters)"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            className="border border-black dark:border-white/30 rounded p-2.5 w-full"
+                        />
 
-                    {error && <p className="text-red-500 text-sm">{error}</p>}
+                        {error && <p className="text-red-500 text-sm">{error}</p>}
 
-                    <button
-                        onClick={handleRegister}
-                        disabled={loading}
-                        className="rounded-md p-2.5 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
-                    >
-                        {loading ? "Creating account..." : "Sign Up"}
-                    </button>
+                        <button
+                            onClick={handleRegister}
+                            disabled={loading}
+                            type="submit"
+                            className="rounded-md p-2.5 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
+                        >
+                            {loading ? "Creating account..." : "Sign Up"}
+                        </button>
+                    </form>
 
                     <div className="flex items-center gap-2">
                         <div className="flex-1 border-t border-black dark:border-white/30"/>

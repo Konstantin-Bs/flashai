@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, use } from "react"
 import { useRouter } from "next/navigation"
 import { createDeck } from "@/lib/storage"
 import { useAuth } from "@/lib/auth-context"
@@ -15,6 +15,14 @@ export default function NameForm({ onClose }: Props) {
     const [error, setError] = useState("")
     const router = useRouter()
     const { user, loading } = useAuth()
+
+    useEffect(() => {
+        function handleKeyDown(e: KeyboardEvent) {
+            if (e.key === "Escape") onClose()
+        }
+        document.addEventListener("keydown", handleKeyDown)
+        return () => document.removeEventListener("keydown", handleKeyDown)
+    }, [])
 
     async function handleCreateDeck() {
         if (!deckName.trim()) {
@@ -51,10 +59,12 @@ export default function NameForm({ onClose }: Props) {
                 </div>
                 <div className="flex flex-col gap-4">
                     <input
+                        autoFocus
                         type="text"
                         placeholder="Deck name"
                         value={deckName}
                         onChange={e => setDeckName(e.target.value)}
+                        onKeyDown={e => {if (e.key === "Enter") handleCreateDeck()}}
                         className="border border-black dark:border-white/30 rounded-md p-2 w-full"
                     />
                     {error && <p className="text-red-500 text-sm">{error}</p>}

@@ -32,6 +32,11 @@ export default function GenerateForm({ deckId, onSuccess, onClose }: Props) {
             const timer = setTimeout(() => setFileError(""), 2000)
             return () => clearTimeout(timer)
         }
+        function handleKeyDown(e: KeyboardEvent) {
+            if (e.key === "Escape") onClose()
+        }
+        document.addEventListener("keydown", handleKeyDown)
+        return () => document.removeEventListener("keydown", handleKeyDown)
     }, [error, fileError])
 
     async function handleGenerate() {
@@ -160,7 +165,7 @@ export default function GenerateForm({ deckId, onSuccess, onClose }: Props) {
                     Own Card
                 </button>
             </div>
-
+            
             {input === 0 && (
             <div>
             <textarea

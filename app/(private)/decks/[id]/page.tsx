@@ -117,6 +117,7 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
           <input
             value={editedName}
             onChange={e => setEditedName(e.target.value)}
+            onKeyDown={e => {if (e.key === "Enter") handleEditName()}}
             className="text-xl border rounded-md pl-0.5"
             size={15}
           />

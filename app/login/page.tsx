@@ -49,6 +49,7 @@ export default function LoginPage() {
             </div>
             <div>
                 <div className="flex flex-col gap-4">
+                    <form onSubmit={e => {e.preventDefault(); handleLogin()}} className="flex flex-col gap-4">
                     <input
                         type="email"
                         placeholder="Email"
@@ -59,6 +60,7 @@ export default function LoginPage() {
                     <div className="text-right">
                         <button 
                             onClick={() => setShowForm(true)}
+                            type="button"
                             className="text-blue-500 hover:underline text-sm mb-0.5 cursor-pointer"
                         >
                             Forgot Password?
@@ -77,10 +79,12 @@ export default function LoginPage() {
                     <button
                         onClick={handleLogin}
                         disabled={loading}
+                        type="submit"
                         className="rounded-md p-2.5 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
                     >
                         {loading ? "Signing in..." : "Sign in"}
                     </button>
+                    </form>
 
                     <div className="flex items-center gap-2">
                         <div className="flex-1 border-t border-black dark:border-white/30"/>

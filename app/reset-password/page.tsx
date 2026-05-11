@@ -65,6 +65,7 @@ export default function ResetPasswordPage() {
                         Reset Password
                     </h1>
                 </div>
+                <form onSubmit={e => {e.preventDefault(); handleReset()}} className="flex flex-col gap-4">
                 <input
                     type="password"
                     placeholder="New Password"
@@ -84,10 +85,12 @@ export default function ResetPasswordPage() {
                 <button
                     onClick={handleReset}
                     disabled={loading}
+                    type="submit"
                     className="rounded-md p-2.5 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
                 >
                     {loading ? "Resetting..." : "Reset Password"}
-                </button>    
+                </button> 
+                </form>   
             </div>
         </div>
     )

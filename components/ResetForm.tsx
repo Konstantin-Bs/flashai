@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { resetPassword } from "@/lib/auth"
 
 interface Props {
@@ -12,6 +12,14 @@ export default function ResetForm({ onClose, onSuccess }: Props) {
     const [email, setEmail] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+            function handleKeyDown(e: KeyboardEvent) {
+                if (e.key === "Escape") onClose()
+            }
+            document.addEventListener("keydown", handleKeyDown)
+            return () => document.removeEventListener("keydown", handleKeyDown)
+        }, [])
 
     async function handleReset() {
         if (!email.trim()) {
@@ -52,10 +60,12 @@ export default function ResetForm({ onClose, onSuccess }: Props) {
                 </div>
                 <div className="flex flex-col gap-4">
                     <input
+                        autoFocus
                         type="email"
                         placeholder="Email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
+                        onKeyDown={e => {if (e.key === "Enter") handleReset()}}
                         className="border border-black dark:border-white/30 rounded-md p-2 w-full"
                     />
                     {error && <p className="text-red-500 text-sm">{error}</p>}
