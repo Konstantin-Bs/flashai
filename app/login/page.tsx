@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { signIn, signInWithGoogle } from "@/lib/auth"
+import ResetForm from "@/components/ResetForm"
 
 export default function LoginPage() {
     const router = useRouter()
@@ -11,6 +12,8 @@ export default function LoginPage() {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] =useState(false)
+    const [showForm, setShowForm] = useState(false)
+    const [success, setSuccess] = useState(false)
 
     async function handleLogin() {
         if (!email || !password) {
@@ -32,6 +35,11 @@ export default function LoginPage() {
         router.push("/home")
     }
 
+    async function handleSuccess() {
+        setShowForm(false)
+        setSuccess(true)
+    }
+
     return (
         <div className="max-w-sm mx-auto top-20 p-6">
             <div>
@@ -48,13 +56,21 @@ export default function LoginPage() {
                         onChange={e => setEmail(e.target.value)}
                         className="border border-black dark:border-white/30 rounded p-2.5 w-full"
                     />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        className="border border-black dark:border-white/30 rounded p-2.5 w-full"
-                    />
+                    <div className="text-right">
+                        <button 
+                            onClick={() => setShowForm(true)}
+                            className="text-blue-500 hover:underline text-sm mb-0.5 cursor-pointer"
+                        >
+                            Forgot Password?
+                        </button>
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={e => setPassword(e.target.value)}
+                            className="border border-black dark:border-white/30 rounded p-2.5 w-full"
+                        />
+                    </div>
 
                     {error && <p className="text-red-500 text-sm">{error}</p>}
 
@@ -82,12 +98,20 @@ export default function LoginPage() {
                 <div className="p-5">
                     <p className="text-sm text-center">
                         No account?{" "}
-                        <Link href="/register" className="text-blue-600 hover:underline">
+                        <Link href="/register" className="text-blue-500 hover:underline">
                             Register
                         </Link>
                     </p>
                 </div>
+                {success && (
+                    <div className="text-center">
+                    <p className="text-green-600 text-sm">
+                        Reset link sent! Check your email.
+                    </p>
+                    </div>
+                )}
             </div>
+            {showForm && <ResetForm onSuccess={handleSuccess} onClose={() => setShowForm(false)} />}
         </div>
     )
 }

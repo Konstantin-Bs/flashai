@@ -21,7 +21,7 @@ export function Header() {
     }, [])
 
     const pathname = usePathname()
-    const hideHeader = ["/login", "/register"].includes(pathname)
+    const hideHeader = ["/login", "/register", "/reset-password"].includes(pathname)
 
     if (hideHeader) return null
 
