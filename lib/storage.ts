@@ -4,7 +4,7 @@ import { Deck, Flashcard } from "./types"
 export async function loadDecks(userId: string): Promise<Deck[]> {
     const { data: decks, error } = await supabase
         .from("decks")
-        .select(`id, name, created_at, cards(id, question, answer)`)
+        .select(`id, name, created_at, cards(id, created_at, question, answer)`)
         .eq("user_id", userId)
         .order("created_at", { ascending: false})
 

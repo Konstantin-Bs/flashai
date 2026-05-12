@@ -63,7 +63,7 @@ export default function ProfilePanel({ onClose }: Props) {
                 <div className="border-t border-black dark:border-white/30"/>
 
                 <button
-                    onClick={() => alert("Settings coming soon")}
+                    onClick={() => {router.push("/settings"); onClose()}}
                     className="w-full text-left text-sm p-1 rounded-md border border-transparent hover:border-slate-950 dark:hover:border-white/30 transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
                     <Settings size={16}/>

@@ -109,7 +109,7 @@ export default function Page() {
             <section className="mb-6">
                 <h2 className="text-xl font-semibold mb-3">Präambel</h2>
                 <p className="mb-2">Mit der folgenden Datenschutzerklärung informieren wir Sie darüber, welche personenbezogenen Daten wir verarbeiten, zu welchen Zwecken dies geschieht und in welchem Umfang dies erfolgt. Diese Datenschutzerklärung gilt für unser gesamtes Onlineangebot.</p>
-                <p className="text-sm text-gray-500">Stand: 27. April 2026</p>
+                <p className="text-sm text-gray-500">Stand: 13. Mai 2026</p>
             </section>
 
             <section className="mb-6">
@@ -120,7 +120,7 @@ export default function Page() {
                     47441 Moers, Deutschland
                 </p>
                 <p className="mt-2">E-Mail: konstantin.booms@gmail.com</p>
-                <p className="mt-1">Impressum: https://flashcard-app-blond-nine.vercel.app/impressum</p>
+                <p className="mt-1">Impressum: https://getflashai.vercel.app/impressum</p>
             </section>
 
             <section className="mb-6">
@@ -162,12 +162,11 @@ export default function Page() {
                 <h2 className="text-xl font-semibold mb-3">Hosting und Infrastruktur</h2>
                 <p className="mb-2">Unser Onlineangebot wird über folgende Dienste bereitgestellt:</p>
                 <ul className="list-disc list-inside space-y-1 mb-3">
-                    <li><strong>Vercel:</strong> Hosting und Bereitstellung der Website</li>
-                    <li><strong>Supabase:</strong> Datenbank, Authentifizierung und Backend-Services</li>
-                    <li><strong>Google AI API:</strong> Verarbeitung von Nutzereingaben zur Generierung von Inhalten</li>
+                    <li><strong>Vercel Inc., 340 Pine Street, Suite 701, San Francisco, CA 94104, USA:</strong> Hosting und Bereitstellung der Website. Ein Auftragsverarbeitungsvertrag wurde auf Basis der EU-Standardvertragsklauseln abgeschlossen. Weitere Informationen: vercel.com/legal/dpa</li>
+                    <li><strong>Supabase Inc., 970 Trestle Glen Rd, Oakland, CA 94610, USA:</strong> Datenbank, Authentifizierung und Backend-Services. Ein Auftragsverarbeitungsvertrag (AVV) wurde abgeschlossen. Datenspeicherung erfolgt in Frankfurt, Deutschland (EU).</li>
+                    <li><strong>Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA:</strong> Verarbeitung von Nutzereingaben zur Generierung von Inhalten (Google Gemini API) sowie Authentifizierung (Google Sign-In). Die Nutzung erfolgt auf Grundlage der Google Cloud Data Processing Terms, die automatisch mit der Nutzung des Dienstes gelten.</li>
                 </ul>
-                <p className="mb-2">Wir haben mit Vercel und Supabase jeweils einen Auftragsverarbeitungsvertrag (AVV) abgeschlossen.</p>
-                <p>Bei der Nutzung der Google AI API können eingegebene Inhalte (z. B. Texteingaben) an externe Server übermittelt und dort verarbeitet werden, um die angeforderten Funktionen bereitzustellen.</p>
+                <p>Bei der Nutzung der Google AI API können eingegebene Inhalte (z. B. Texteingaben) an Server in den USA übermittelt und dort verarbeitet werden, um die angeforderten Funktionen bereitzustellen.</p>
             </section>
 
             <section className="mb-6">
@@ -177,7 +176,14 @@ export default function Page() {
 
             <section className="mb-6">
                 <h2 className="text-xl font-semibold mb-3">Speicherung und Löschung</h2>
-                <p>Wir speichern personenbezogene Daten nur so lange, wie dies für die jeweiligen Zwecke erforderlich ist oder gesetzliche Aufbewahrungsfristen bestehen.</p>
+                <p className="mb-3">Wir speichern personenbezogene Daten nur so lange, wie dies für die jeweiligen Zwecke erforderlich ist. Die konkreten Speicherdauern sind wie folgt:</p>
+                <ul className="list-disc list-inside space-y-2">
+                    <li><strong>Kontodaten (E-Mail-Adresse):</strong> Bis zur Löschung des Nutzerkontos durch den Nutzer selbst oder auf Anfrage.</li>
+                    <li><strong>Karteikarten und Decks:</strong> Werden unmittelbar und vollständig bei Löschung des Nutzerkontos gelöscht.</li>
+                    <li><strong>Server-Logs (Vercel):</strong> Werden automatisch nach 30 Tagen gelöscht.</li>
+                    <li><strong>Authentifizierungsdaten (Supabase):</strong> Werden bei Kontolöschung sofort entfernt.</li>
+                </ul>
+                <p className="mt-3">Nutzer können ihr Konto und alle damit verbundenen Daten jederzeit direkt in den Einstellungen der App löschen.</p>
             </section>
 
             <section className="mb-6">
@@ -192,6 +198,7 @@ export default function Page() {
                     <li>Widerspruch gegen die Verarbeitung</li>
                     <li>Widerruf erteilter Einwilligungen</li>
                     <li>Sie können Ihr Konto und alle damit verbundenen Daten jederzeit direkt in der App löschen.</li>
+                    <li>Datenübertragbarkeit — Sie können Ihre Daten jederzeit als JSON-Datei in den Einstellungen exportieren.</li>
                 </ul>
             </section>
 
@@ -203,7 +210,7 @@ export default function Page() {
 
             <section className="mb-6">
                 <h2 className="text-xl font-semibold mb-3">Cookies</h2>
-                <p>Wir verwenden Cookies, um die Funktionalität unserer Website sicherzustellen. Soweit erforderlich, holen wir eine Einwilligung ein.</p>
+                <p>Wir verwenden ausschließlich technisch notwendige Cookies für die Authentifizierung und Sitzungsverwaltung. Diese Cookies sind für den Betrieb der Website erforderlich und bedürfen keiner Einwilligung.</p>
             </section>
 
             <section className="mb-6">
@@ -212,8 +219,15 @@ export default function Page() {
             </section>
 
             <section className="mb-6">
+                <h2 className="text-xl font-semibold mb-3">Einsatz von Künstlicher Intelligenz</h2>
+                <p className="mb-3">Unsere Anwendung nutzt Künstliche Intelligenz zur Generierung von Lernkarten. Hierfür werden die vom Nutzer eingegebenen Texte oder hochgeladenen Dateien an die Google Gemini API (Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) übermittelt und dort verarbeitet.</p>
+                <p className="mb-3">Die generierten Lernkarten werden ausschließlich durch KI erstellt. Nutzer werden darauf hingewiesen, dass KI-generierte Inhalte ungenau sein können und sollten die Ergebnisse eigenständig überprüfen.</p>
+                <p>Rechtsgrundlage für diese Verarbeitung ist Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung), da die KI-Generierung eine Kernfunktion des Dienstes darstellt.</p>
+            </section>
+
+            <section className="mb-6">
                 <h2 className="text-xl font-semibold mb-3">Änderungen</h2>
-                <p>Wir behalten uns vor, diese Datenschutzerklärung anzupassen, um sie an geänderte Rechtslagen oder Änderungen unseres Angebots anzupassen.</p>
+                <p>Wir behalten uns vor, diese Datenschutzerklärung anzupassen. Die letzte Aktualisierung erfolgte am 13. Mai 2026.</p>
             </section>
 
             <section className="mb-6">
