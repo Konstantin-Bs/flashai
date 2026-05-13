@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { resetPassword } from "@/lib/auth"
+import { Loader2 } from "lucide-react"
 
 interface Props {
     onSuccess: () => void
@@ -74,7 +75,14 @@ export default function ResetForm({ onClose, onSuccess }: Props) {
                         disabled={loading}
                         className="rounded-md p-2 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
                     >
-                        {loading ? "Sending reset link..." : "Send Reset Link"}
+                        {loading ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 size={16} className="animate-spin"/>
+                            Sending reset link
+                        </div>
+                        ) : (
+                            "Send reset link"
+                        )}
                     </button>
                 </div>
             </div>

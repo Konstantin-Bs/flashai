@@ -4,6 +4,7 @@ import { useAuth } from "@/lib/auth-context"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
+import { Loader2 } from "lucide-react"
 
 export default function ChangePassword() {
     const { user, loading } = useAuth()
@@ -105,7 +106,14 @@ export default function ChangePassword() {
                     type="submit"
                     className="rounded-md p-2.5 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
                 >
-                    {changeLoading ? "Changing..." : "Change Password"}
+                    {changeLoading ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 size={16} className="animate-spin"/>
+                            Changing
+                        </div>
+                    ) : (
+                        "Change Password"
+                    )}
                 </button> 
                 </form> 
                 {success && (

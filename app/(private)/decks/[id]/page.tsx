@@ -20,6 +20,7 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
   const [editedName, setEditedName] = useState("")
   const [showDropdown, setShowDropdown] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
+  const [loadingCards, setLoadingCards] = useState(true)
 
   async function fetchDeck() {
       const { data, error } = await supabase
@@ -46,6 +47,7 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
 
     if (!loading && user) {
       fetchDeck()
+      setLoadingCards(false)
     }
 
   }, [user, loading])
@@ -205,6 +207,33 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
         <p>{cards.length} cards</p>
       </div>
     </div>
+    {loadingCards && (
+      <div className="animate-pulse">
+    
+      <div className="w-full">
+        <div className="flex gap-2 mb-2">
+          <div className="h-8 w-8 bg-gray-200 dark:bg-slate-800 rounded" />
+          <div className="h-8 flex-1 bg-gray-200 dark:bg-slate-800 rounded" />
+          <div className="h-8 flex-1 bg-gray-200 dark:bg-slate-800 rounded" />
+          <div className="h-8 w-10 bg-gray-200 dark:bg-slate-800 rounded" />
+        </div>
+
+        {[1, 2, 3, 4].map(i => (
+          <div key={i} className="flex gap-2 mb-2">
+            <div className="h-10 w-8 bg-gray-100 dark:bg-slate-700 rounded" />
+            <div className="h-10 flex-1 bg-gray-100 dark:bg-slate-700 rounded" />
+            <div className="h-10 flex-1 bg-gray-100 dark:bg-slate-700 rounded" />
+            <div className="h-10 w-10 bg-gray-100 dark:bg-slate-700 rounded" />
+          </div>
+        ))}
+      </div>
+    </div>
+    )}
+    {cards.length === 0 ? (
+      <div className="text-center py-8">
+        No cards yet
+      </div>
+    ) : (
     <table className="w-full border-collapse">
       <thead>
         <tr>
@@ -215,14 +244,7 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
         </tr>
       </thead>
       <tbody>
-        {cards.length === 0 ? (
-          <tr>
-            <td colSpan={4} className="text-center py-8">
-              No cards yet
-            </td>
-          </tr>
-        ) : (
-        cards.map((card, index) => (
+        {cards.map((card, index) => (
           <tr key={card.id} className="bg-gray-100 dark:bg-slate-900">
             <td className="border border-black dark:border-white/10 p-2 text-center">{index + 1}</td>
             <td className="border border-black dark:border-white/10 p-2">{card.question}</td>
@@ -236,9 +258,10 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
               </button>
             </td>
           </tr>
-        )))}
+        ))}
       </tbody>
     </table>
+    )}
     <div className="flex justify-center mt-4">
       <button 
         onClick={() => setShowForm(true)}
@@ -248,5 +271,5 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
       </button>
     </div>
   </div>
-)
+  )
 }

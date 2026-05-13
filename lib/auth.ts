@@ -25,6 +25,15 @@ export async function resetPassword(email: string) {
     return { data, error }
 }
 
+export async function resendConfirmationEmail(email: string) {
+    const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
+        options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/decks` }
+    })
+    return { error }
+}
+
 export async function signInWithGoogle() {
     const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

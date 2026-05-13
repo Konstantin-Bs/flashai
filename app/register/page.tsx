@@ -1,9 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { signUp, signInWithGoogle } from "@/lib/auth"
+import { signUp, signInWithGoogle, resendConfirmationEmail } from "@/lib/auth"
+import { Loader2 } from "lucide-react"
 
 export default function RegisterPage() {
     const router = useRouter()
@@ -12,6 +13,14 @@ export default function RegisterPage() {
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
     const [success, setSuccess] = useState(false)
+    const [resend, setResend] = useState(false)
+
+    useEffect(() => {
+        if (resend) {
+            const timer = setTimeout (() => setResend(false), 3000)
+            return () => clearTimeout(timer)
+        }
+    }, [resend])
 
     async function handleRegister() {
         if (!email || !password) {
@@ -37,6 +46,20 @@ export default function RegisterPage() {
         setSuccess(true)
     }
 
+    async function handleResend() {
+        const { error } = await resendConfirmationEmail(email)
+
+        if (error) {
+            if (error.message?.includes("rate")) {
+                setError("Please wait a moment before requesting another email.")
+            } else {
+                setError(error.message)
+            }
+            return
+        }
+        setResend(true)
+    }
+
     return (
         <div className="max-w-sm mx-auto top-20 p-6">
             <div>
@@ -52,6 +75,7 @@ export default function RegisterPage() {
                             placeholder="Email"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
+                            disabled={success}
                             className="border border-black dark:border-white/30 rounded p-2.5 w-full"
                         /> 
                         <input
@@ -59,6 +83,7 @@ export default function RegisterPage() {
                             placeholder="Password (min. 8 characters)"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
+                            disabled={success}
                             className="border border-black dark:border-white/30 rounded p-2.5 w-full"
                         />
 
@@ -66,11 +91,18 @@ export default function RegisterPage() {
 
                         <button
                             onClick={handleRegister}
-                            disabled={loading}
+                            disabled={loading || success}
                             type="submit"
                             className="rounded-md p-2.5 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
                         >
-                            {loading ? "Creating account..." : "Sign Up"}
+                            {loading ? (
+                                <div className="flex items-center justify-center gap-2">
+                                    <Loader2 size={16} className="animate-spin"/>
+                                    Creating account
+                                </div>
+                            ) : (
+                                "Sign Up"
+                            )}
                         </button>
                     </form>
 
@@ -96,10 +128,25 @@ export default function RegisterPage() {
                     </p>
                 </div>
                 {success && (
-                    <div className="text-center">
-                    <p className="text-green-600 text-sm">
-                    Check your email to confirm your account.
-                    </p>
+                    <div className="text-center flex flex-col gap-5">
+                        <p className="text-green-600 text-sm">
+                        Check your email to confirm your account.
+                        </p>
+                        <div className="flex gap-4 justify-center">
+                            <p>Email not received?</p>
+                            <button 
+                                onClick={handleResend}
+                                disabled={resend}
+                                className="rounded-md px-1 border border-black dark:border-white/30 bg-gray-400 dark:bg-gray-700 hover:bg-gray-500 dark:hover:bg-gray-800 cursor-pointer"
+                            >
+                                Resend
+                            </button>
+                        </div>
+                        {resend && (
+                            <p className="text-green-600 text-sm">
+                                Resend Email.
+                            </p>
+                        )}
                     </div>
                 )}
             </div>

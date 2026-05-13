@@ -27,13 +27,12 @@ AI-powered flashcard generator. Paste your notes or upload a PDF - FlashAI gener
 - **File Upload** — Supports PDF, DOCX, TXT, and Markdown files
 - **Deck Management** — Create, view, edit, and delete decks and individual cards
 - **Study Mode** — Flip cards, mark as Got It or Still Learning, track progress per session
-- **Authentication** — Email/password and Google OAuth via Supabase Auth
-- **Dark / Light Mode** — Follows system preference with manual toggle
-- **DSGVO Compliant** — Impressum, Datenschutzerklärung, delete account, data export, password reset, concrete data retention periods
-- **Fully Responsive** — Works on desktop and mobile
 - **Export Decks** — Download individual decks as JSON or Anki-compatible .txt file
-- **Account Settings** — Change password, export all personal data (DSGVO Art. 20)
-- **Password Reset** — Email-based password reset flow
+- **Authentication** — Email/password and Google OAuth, email confirmation, password reset
+- **Account Settings** — Change password, export personal data (DSGVO Art. 20)
+- **Dark / Light Mode** — Follows system preference with manual toggle
+- **DSGVO Compliant** — Impressum, Datenschutzerklärung, data export, delete account, concrete retention periods
+- **Fully Responsive** — Works on desktop and mobile
 
 ---
 

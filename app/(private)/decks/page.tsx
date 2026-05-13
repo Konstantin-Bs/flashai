@@ -14,7 +14,7 @@ export default function Home() {
   const router = useRouter()
   const [decks, setDecks] = useState<Deck[]>([])
   const [showForm, setShowForm] = useState(false)
-  const [loadingDecks, setLoadingDecks] = useState(false)
+  const [loadingDecks, setLoadingDecks] = useState(true)
 
   useEffect(() => {
     if (!loading && !user) {
@@ -71,7 +71,23 @@ export default function Home() {
       </div>
 
       {loadingDecks && (
-        <p className="text-gray-400 text-center mt-20">Loading decks...</p>
+        <div className="flex flex-col gap-4">
+          {[1, 2, 3].map(i => (
+            <div
+              key={i}
+              className="rounded-xl p-5 flex items-center justify-between bg-gray-100 dark:bg-slate-900 animate-pulse"
+            >
+              <div className="flex flex-col gap-2">
+                <div className="h-5 w-40 bg-gray-200 dark:bg-slate-700 rounded" />
+                <div className="h-3 w-16 bg-gray-200 dark:bg-slate-700 rounded" />
+              </div>
+              <div className="flex gap-4">
+                <div className="h-8 w-12 bg-gray-200 dark:bg-slate-700 rounded" />
+                <div className="h-8 w-16 bg-gray-200 dark:bg-slate-700 rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
       )}
 
       {!loadingDecks && decks.length === 0 && (
@@ -81,34 +97,36 @@ export default function Home() {
         </div>
       )}
 
-      <div className="flex flex-col gap-4">
-        {decks.map(deck => (
-          <div
-            key={deck.id}
-            className="rounded-xl p-5 flex items-center justify-between border border-black dark:border-white/30 dark:bg-slate-900 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
-            onClick={() => handleDecksList(deck.id)}
-          >
-            <div>
-              <h2 className="font-semibold text-lg">{deck.name}</h2>
-              <p className="text-sm text-gray-400">{deck.cards.length} cards</p>
+      {!loadingDecks && decks.length > 0 && (
+        <div className="flex flex-col gap-4">
+          {decks.map(deck => (
+            <div
+              key={deck.id}
+              className="rounded-xl p-5 flex items-center justify-between border border-black dark:border-white/30 dark:bg-slate-900 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
+              onClick={() => handleDecksList(deck.id)}
+            >
+              <div>
+                <h2 className="font-semibold text-lg">{deck.name}</h2>
+                <p className="text-sm text-gray-400">{deck.cards.length} cards</p>
+              </div>
+              <div className="flex gap-4.5">
+                <button
+                  onClick={(e) => {e.stopPropagation(); handleDelete(deck.id)}}
+                  className="text-sm text-red-400 hover:text-red-600"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={(e) => {e.stopPropagation(); handleStudy(deck.id, deck.cards.length)}}
+                  className="bg-slate-500 dark:bg-slate-700 text-white rounded-lg p-2 px-4 text-sm font-semibold hover:bg-slate-600 dark:hover:bg-slate-800 border border-transparent hover:border-white/30 transition-colors"
+                >
+                  Study
+                </button>
+              </div>
             </div>
-            <div className="flex gap-4.5">
-              <button
-                onClick={(e) => {e.stopPropagation(); handleDelete(deck.id)}}
-                className="text-sm text-red-400 hover:text-red-600"
-              >
-                Delete
-              </button>
-              <button
-                onClick={(e) => {e.stopPropagation(); handleStudy(deck.id, deck.cards.length)}}
-                className="bg-slate-500 dark:bg-slate-700 text-white rounded-lg p-2 px-4 text-sm font-semibold hover:bg-slate-600 dark:hover:bg-slate-800 border border-transparent hover:border-white/30 transition-colors"
-              >
-                Study
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       {showForm && <NameForm onClose={() => setShowForm(false)} />}
     </div>
   )

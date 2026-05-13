@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react"
 import { useRouter } from "next/navigation"
 import { createDeck } from "@/lib/storage"
 import { useAuth } from "@/lib/auth-context"
+import { Loader2 } from "lucide-react"
 
 interface Props {
     onClose: () => void
@@ -73,7 +74,14 @@ export default function NameForm({ onClose }: Props) {
                         disabled={deckLoading}
                         className="rounded-md p-2 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
                     >
-                        {deckLoading ? "Creating..." : "Create Deck"}
+                        {deckLoading ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 size={16} className="animate-spin"/>
+                            Creating
+                        </div>
+                        ) : (
+                            "Create Deck"
+                        )}
                     </button>
                 </div>
             </div>

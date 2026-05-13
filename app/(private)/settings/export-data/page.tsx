@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import { Download } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { loadDecks } from "@/lib/storage"
+import { Loader2 } from "lucide-react"
 
 export default function ExportData() {
     const { user, loading } = useAuth()
@@ -65,7 +66,14 @@ export default function ExportData() {
                 disabled={exportLoading}
                 className="rounded-md py-2.5 px-10 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
             >
-                {exportLoading ? "Exporting Data..." : "Export Data"}
+                {exportLoading ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 size={16} className="animate-spin"/>
+                            Exporting Data
+                        </div>
+                    ) : (
+                        "Export Data"
+                    )}
             </button>
         </div>
     )

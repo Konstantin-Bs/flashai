@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { signIn, signInWithGoogle } from "@/lib/auth"
 import ResetForm from "@/components/ResetForm"
+import { Loader2 } from "lucide-react"
 
 export default function LoginPage() {
     const router = useRouter()
@@ -82,7 +83,14 @@ export default function LoginPage() {
                         type="submit"
                         className="rounded-md p-2.5 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
                     >
-                        {loading ? "Signing in..." : "Sign in"}
+                        {loading ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 size={16} className="animate-spin"/>
+                            Signing in
+                        </div>
+                        ) : (
+                            "Sign in"
+                        )}
                     </button>
                     </form>
 

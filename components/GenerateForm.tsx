@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { addCardsToDeck } from "@/lib/storage"
-import { X } from "lucide-react"
+import { X, Loader2 } from "lucide-react"
 
 interface Props {
     deckId: string
@@ -278,7 +278,14 @@ export default function GenerateForm({ deckId, onSuccess, onClose }: Props) {
                     disabled={loading}
                     className="bg-blue-500 text-white rounded-md p-2 font-semibold disabled:opacity-70 hover:opacity-70"
                 >
-                    {loading ? "Generating..." : "Add Flashcard"}
+                    {loading ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 size={16} className="animate-spin"/>
+                            Adding
+                        </div>
+                    ) : (
+                        "Add Flashcard"
+                    )}
                 </button>
             ) : (
                 <button
@@ -286,7 +293,14 @@ export default function GenerateForm({ deckId, onSuccess, onClose }: Props) {
                     disabled={loading}
                     className="bg-blue-500 text-white rounded-md p-2 font-semibold disabled:opacity-70 hover:opacity-70"
                 >
-                    {loading ? "Generating..." : "Generate Flashcards"}
+                    {loading ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 size={16} className="animate-spin"/>
+                            Generating
+                        </div>
+                    ) : (
+                        "Generate Flashcards"
+                    )}
                 </button>
             )}
             {input !== 2 && (

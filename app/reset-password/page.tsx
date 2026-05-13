@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { supabase } from "@/lib/supabase"
+import { Loader2 } from "lucide-react"
 
 export default function ResetPasswordPage() {
     const router = useRouter()
@@ -88,7 +89,14 @@ export default function ResetPasswordPage() {
                     type="submit"
                     className="rounded-md p-2.5 font-semibold disabled:opacity-50 text-white bg-blue-800/85 hover:bg-blue-800 cursor-pointer"
                 >
-                    {loading ? "Resetting..." : "Reset Password"}
+                    {loading ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 size={16} className="animate-spin"/>
+                            Resetting
+                        </div>
+                    ) : (
+                        "Reset Password"
+                    )}
                 </button> 
                 </form>   
             </div>
