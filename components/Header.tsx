@@ -39,7 +39,7 @@ export function Header() {
                 {user ? (
                     <div className="flex h-16 items-center justify-between px-6">
                         <div>
-                            <Link href="/home">
+                            <Link href="/decks">
                                 <img src="/logo.svg" alt="FlashAI" width={90} />
                             </Link>
                         </div>

@@ -10,7 +10,7 @@ export default function Home() {
 
     useEffect(() => {
         if (!loading && user) {
-            router.push("/home")
+            router.push("/decks")
             router
         }
     }, [user, loading])

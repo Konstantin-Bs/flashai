@@ -32,6 +32,11 @@ export default function Home() {
   }, [user, loading])
 
   async function handleDelete(id: string) {
+    const confirmed = window.confirm(
+      "Are you sure? This will permanently delete your Deck."
+      )
+    if (!confirmed) return
+
     await deleteDeck(id)
     if (user) {
       const updated = await loadDecks(user.id)

@@ -29,8 +29,11 @@ AI-powered flashcard generator. Paste your notes or upload a PDF - FlashAI gener
 - **Study Mode** — Flip cards, mark as Got It or Still Learning, track progress per session
 - **Authentication** — Email/password and Google OAuth via Supabase Auth
 - **Dark / Light Mode** — Follows system preference with manual toggle
-- **DSGVO Compliant** — Impressum, Datenschutzerklärung, delete account feature
+- **DSGVO Compliant** — Impressum, Datenschutzerklärung, delete account, data export, password reset, concrete data retention periods
 - **Fully Responsive** — Works on desktop and mobile
+- **Export Decks** — Download individual decks as JSON or Anki-compatible .txt file
+- **Account Settings** — Change password, export all personal data (DSGVO Art. 20)
+- **Password Reset** — Email-based password reset flow
 
 ---
 
@@ -70,6 +73,7 @@ Create a `.env.local` file in the root:
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 ### Database Setup
@@ -109,15 +113,20 @@ Open [http://localhost:3000](http://localhost:3000)
 ## Project Structure
 
 ```
-/app
-  /(private)        → authenticated pages (home, decks, study)
+/app                
+  /page.tsx         → landing page (public)
+  /(private)        → authenticated pages
+    /decks          → deck list and detail pages
+    /study          → study mode
+    /settings       → account settings (change password, export data)
   /login            → login page
   /register         → register page
+  /reset-password   → password reset page
   /impressum        → legal
   /datenschutzerklaerung → privacy policy
 /components         → reusable UI components
 /lib                → utilities, Supabase client, auth context
-/public             → static assets
+/public             → static assets, logo
 ```
 
 ---

@@ -1,12 +1,12 @@
 "use client"
 
-import { useState, useEffect, use } from "react"
+import { useState, useEffect, use, useRef } from "react"
 import { Flashcard, Deck } from "@/lib/types"
 import { supabase } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import GenerateForm from "@/components/GenerateForm"
-import { Pencil, Check, Trash2, ArrowLeft } from "lucide-react"
+import { Pencil, Check, Trash2, ArrowLeft, Download } from "lucide-react"
 
 export default function DeckDetailPage({ params }: { params: Promise<{ id: string }> }) {
 
@@ -18,6 +18,8 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
   const [showForm, setShowForm] = useState(false)
   const [isEditingName, setIsEditingName] = useState(false)
   const [editedName, setEditedName] = useState("")
+  const [showDropdown, setShowDropdown] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
 
   async function fetchDeck() {
       const { data, error } = await supabase
@@ -47,6 +49,16 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
     }
 
   }, [user, loading])
+
+  useEffect(() => {
+        function handleClickOutside(e: MouseEvent) {
+            if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+                setShowDropdown(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
+    }, [setShowDropdown])
 
   async function handleDeleteCard(cardId: string | undefined) {
     if (!cardId) return
@@ -85,6 +97,42 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
   async function handleSuccess() {
     fetchDeck()
     setShowForm(false)
+  }
+
+  function handleExportJSON() {
+    if (!user) return
+
+    const exportData = {
+      name: deckName,
+      cards: cards.map(card => ({
+        question: card.question,
+        answer: card.answer
+      }))
+    }
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `${deckName}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  function handleExportTXT() {
+    if (!user) return
+
+    const exportData = cards.map(card => (
+      card.question + "\t" + card.answer
+    )).join("\n")
+
+    const blob = new Blob([exportData], { type: "text/plain" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `${deckName}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   if (showForm) {
@@ -126,7 +174,36 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
           </button>
         </div>
       )}
-      <p>{cards.length} cards</p>
+      <div className="flex gap-5">
+        <div className="relative">
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="rounded-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-slate-900 p-1 cursor-pointer"
+          >
+            <Download size={15}/>
+          </button>
+          {showDropdown && (
+            <div 
+              ref={panelRef}
+              className="absolute left-1/2 -translate-x-1/2 mt-3 w-38 rounded-md border border-black dark:border-white/30 bg-white dark:bg-slate-900 shadow-lg z-10"
+            >
+              <button
+                className="w-full text-left pl-2 py-2 hover:bg-gray-300 dark:hover:bg-slate-800"
+                onClick={() => {handleExportJSON(); setShowDropdown(false)}}
+              >
+                Export as JSON
+              </button>
+              <button
+                className="w-full text-left pl-2 py-2 hover:bg-gray-300 dark:hover:bg-slate-800"
+                onClick={() => {handleExportTXT(); setShowDropdown(false)}}
+              >
+                Export as .txt
+              </button>
+            </div>
+          )}
+        </div>
+        <p>{cards.length} cards</p>
+      </div>
     </div>
     <table className="w-full border-collapse">
       <thead>
