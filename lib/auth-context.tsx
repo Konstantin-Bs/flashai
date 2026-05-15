@@ -6,43 +6,43 @@ import { supabase } from "./supabase"
 import { boolean } from "zod"
 
 interface AuthContextType {
-    user: User | null
-    loading: boolean
+  user: User | null
+  loading: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
-    user: null,
-    loading: true,
+  user: null,
+  loading: true,
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        // get current session on mount
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user ?? null)
-            setLoading(false)
-        })
+  useEffect(() => {
+    // get current session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
 
-        // listen for auth changes
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            (_event, session) => {
-                setUser(session?.user ?? null)
-            }
-        )
+    // listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
 
-        return () => subscription.unsubscribe()
-    }, [])
+    return () => subscription.unsubscribe()
+  }, [])
 
-    return (
-        <AuthContext.Provider value={{ user, loading }}>
-            {children}
-        </AuthContext.Provider>
-    )
+  return (
+    <AuthContext.Provider value={{ user, loading }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export function useAuth() {
-    return useContext(AuthContext)
+  return useContext(AuthContext)
 }

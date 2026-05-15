@@ -20,11 +20,9 @@ export default function RootLayout({
       <body className="bg-white dark:bg-slate-950 min-h-screen pt-16 text-slate-950 dark:text-white flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
-            <Header/>
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer/>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
           </AuthProvider>
         </ThemeProvider>
       </body>

@@ -4,13 +4,12 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import NameForm from "@/components/NameForm"
 import { loadDecks, deleteDeck } from "@/lib/storage"
-import { Deck, Flashcard } from "@/lib/types"
+import { Deck } from "@/lib/types"
 import { useAuth } from "@/lib/auth-context"
 import { Plus } from "lucide-react"
 
 export default function Home() {
   const { user, loading } = useAuth()
-
   const router = useRouter()
   const [decks, setDecks] = useState<Deck[]>([])
   const [showForm, setShowForm] = useState(false)
@@ -24,7 +23,7 @@ export default function Home() {
 
     if (!loading && user) {
       setLoadingDecks(true)
-      loadDecks(user.id).then(data => {
+      loadDecks(user.id).then((data) => {
         setDecks(data)
         setLoadingDecks(false)
       })
@@ -34,7 +33,7 @@ export default function Home() {
   async function handleDelete(id: string) {
     const confirmed = window.confirm(
       "Are you sure? This will permanently delete your Deck."
-      )
+    )
     if (!confirmed) return
 
     await deleteDeck(id)
@@ -64,7 +63,7 @@ export default function Home() {
             onClick={() => setShowForm(true)}
             className="bg-blue-800 hover:text-white/85 text-white rounded-xl p-4 font-semibold hover:bg-blue-600/50 transition-colors flex items-center gap-1.5"
           >
-            <Plus size={20} strokeWidth={2}/>
+            <Plus size={20} strokeWidth={2} />
             Add Deck
           </button>
         </div>
@@ -72,7 +71,7 @@ export default function Home() {
 
       {loadingDecks && (
         <div className="flex flex-col gap-4">
-          {[1, 2, 3].map(i => (
+          {[1, 2, 3].map((i) => (
             <div
               key={i}
               className="rounded-xl p-5 flex items-center justify-between bg-gray-100 dark:bg-slate-900 animate-pulse"
@@ -99,7 +98,7 @@ export default function Home() {
 
       {!loadingDecks && decks.length > 0 && (
         <div className="flex flex-col gap-4">
-          {decks.map(deck => (
+          {decks.map((deck) => (
             <div
               key={deck.id}
               className="rounded-xl p-5 flex items-center justify-between border border-black dark:border-white/30 dark:bg-slate-900 hover:bg-gray-200 dark:hover:bg-slate-800 transition-colors"
@@ -107,17 +106,25 @@ export default function Home() {
             >
               <div>
                 <h2 className="font-semibold text-lg">{deck.name}</h2>
-                <p className="text-sm text-gray-400">{deck.cards.length} cards</p>
+                <p className="text-sm text-gray-400">
+                  {deck.cards.length} cards
+                </p>
               </div>
               <div className="flex gap-4.5">
                 <button
-                  onClick={(e) => {e.stopPropagation(); handleDelete(deck.id)}}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDelete(deck.id)
+                  }}
                   className="text-sm text-red-400 hover:text-red-600"
                 >
                   Delete
                 </button>
                 <button
-                  onClick={(e) => {e.stopPropagation(); handleStudy(deck.id, deck.cards.length)}}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleStudy(deck.id, deck.cards.length)
+                  }}
                   className="bg-slate-500 dark:bg-slate-700 text-white rounded-lg p-2 px-4 text-sm font-semibold hover:bg-slate-600 dark:hover:bg-slate-800 border border-transparent hover:border-white/30 transition-colors"
                 >
                   Study

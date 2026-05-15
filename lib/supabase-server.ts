@@ -1,27 +1,29 @@
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 
+// Server-side Supabase client for API routes and server components.
+// Reads auth session from HTTP request cookies since there's no browser context.
 export async function createClient() {
-    const cookieStore = await cookies()
+  const cookieStore = await cookies()
 
-    return createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return cookieStore.getAll()
-                },
-                setAll(cookiesToSet, _headers) {
-                    try {
-                        cookiesToSet.forEach(({ name, value, options }) =>
-                        cookieStore.set(name, value, options)
-                    )
-                    } catch {
-
-                    }
-                },
-            },
-        }
-    )
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet, _headers) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // Silently ignored — cookie setting fails in some server contexts
+          }
+        },
+      },
+    }
+  )
 }

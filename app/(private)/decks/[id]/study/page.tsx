@@ -8,107 +8,113 @@ import { useAuth } from "@/lib/auth-context"
 import { supabase } from "@/lib/supabase"
 import { X, Layers, Check, PartyPopper } from "lucide-react"
 
-export default function StudyPage({ params }: { params: Promise<{ id: string }> }) {
-    const { user, loading } = useAuth()
-    const { id } = use(params)
-    const router = useRouter()
-    const [cards, setCards] = useState<Flashcard[]>([])
-    const [remaining, setRemaining] = useState<Flashcard[]>([])
-    const [gotIt, setGotIt] = useState<Flashcard[]>([])
-    const [deckName, setDeckName] = useState("")
-    const [finished, setFinished] = useState(false)
+export default function StudyPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { user, loading } = useAuth()
+  const { id } = use(params)
+  const router = useRouter()
+  const [cards, setCards] = useState<Flashcard[]>([])
+  const [remaining, setRemaining] = useState<Flashcard[]>([])
+  const [gotIt, setGotIt] = useState<Flashcard[]>([])
+  const [deckName, setDeckName] = useState("")
+  const [finished, setFinished] = useState(false)
 
-    useEffect(() => {
-        if (!loading && !user) {
-            router.push("/login")
-            return
-        }
-
-        const deckId = id
-        if (!deckId) {
-            router.push("/decks")
-            return
-        }
-
-        async function fetchDeck() {
-            const { data, error } = await supabase
-                .from("decks")
-                .select(`id, name, cards(id, question, answer)`)
-                .eq("id", deckId)
-                .single()
-
-            if (error || !data) {
-                router.push("/decks")
-                return
-            }
-
-            setDeckName(data.name)
-            setCards(data.cards)
-            setRemaining(data.cards)
-
-            if (data.cards.length === 0) {
-                router.push("/decks")
-            }
-        }
-
-        fetchDeck()
-    }, [user, loading])
-
-    function handleGotIt() {
-        const current = remaining[0]
-        const newRemaining = remaining.slice(1)
-        setGotIt([...gotIt, current])
-
-        if (newRemaining.length === 0) {
-            setFinished(true)
-        } else {
-            setRemaining(newRemaining)
-        }
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login")
+      return
     }
 
-    function handleStillLearning() {
-        const current = remaining[0]
-        const newRemaining = [...remaining.slice(1), current]
-        setRemaining(newRemaining)
+    const deckId = id
+    if (!deckId) {
+      router.push("/decks")
+      return
     }
 
-    function handleRestart() {
-        setRemaining(cards)
-        setGotIt([])
-        setFinished(false)
+    async function fetchDeck() {
+      const { data, error } = await supabase
+        .from("decks")
+        .select(`id, name, cards(id, question, answer)`)
+        .eq("id", deckId)
+        .single()
+
+      if (error || !data) {
+        router.push("/decks")
+        return
+      }
+
+      setDeckName(data.name)
+      setCards(data.cards)
+      setRemaining(data.cards)
+
+      if (data.cards.length === 0) {
+        router.push("/decks")
+      }
     }
 
-    if (finished) {
-        return (
-        <div className="flex flex-col items-center gap-6 p-6 max-w-2xl mx-auto mt-20">
-            <h1 className="text-3xl font-bold"><PartyPopper size={30} className="inline"/> Done!</h1>
-            <p className="text-gray-500">You got through all cards in {deckName}</p>
-            <div className="flex gap-4">
-                <button
-                    onClick={handleRestart}
-                    className="border-2 rounded-xl p-3 px-6 font-semibold hover:bg-gray-800 cursor-pointer"
-                >
-                    Study Again
-                </button>
-                <button
-                    onClick={() => router.push("/decks")}
-                    className="bg-blue-600 rounded-xl p-3 px-6 font-semibold hover:bg-blue-500 cursor-pointer"
-                >
-                    Back Home
-                </button>
-            </div>
-        </div>
-        )
+    fetchDeck()
+  }, [user, loading])
+
+  function handleGotIt() {
+    const current = remaining[0]
+    const newRemaining = remaining.slice(1)
+    setGotIt([...gotIt, current])
+
+    if (newRemaining.length === 0) {
+      setFinished(true)
+    } else {
+      setRemaining(newRemaining)
     }
+  }
 
-    if (remaining.length === 0) return null
+  function handleStillLearning() {
+    const current = remaining[0]
+    const newRemaining = [...remaining.slice(1), current]
+    setRemaining(newRemaining)
+  }
 
+  function handleRestart() {
+    setRemaining(cards)
+    setGotIt([])
+    setFinished(false)
+  }
+
+  if (finished) {
     return (
+      <div className="flex flex-col items-center gap-6 p-6 max-w-2xl mx-auto mt-20">
+        <h1 className="text-3xl font-bold">
+          <PartyPopper size={30} className="inline" /> Done!
+        </h1>
+        <p className="text-gray-500">You got through all cards in {deckName}</p>
+        <div className="flex gap-4">
+          <button
+            onClick={handleRestart}
+            className="border-2 rounded-xl p-3 px-6 font-semibold hover:bg-gray-800 cursor-pointer"
+          >
+            Study Again
+          </button>
+          <button
+            onClick={() => router.push("/decks")}
+            className="bg-blue-600 rounded-xl p-3 px-6 font-semibold hover:bg-blue-500 cursor-pointer"
+          >
+            Back Home
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (remaining.length === 0) return null
+
+  return (
     <div className="max-w-3xl mx-auto mt-10">
       <div className="flex items-center justify-between px-6 mb-4">
         <h2 className="font-semibold text-2xl">{deckName}</h2>
         <button
-          aria-label="return" 
+          aria-label="return"
           onClick={() => router.push("/decks")}
           className="text-sm hover:text-gray-500 cursor-pointer"
         >
@@ -118,10 +124,11 @@ export default function StudyPage({ params }: { params: Promise<{ id: string }> 
 
       <div className="flex gap-2 px-6 mb-6">
         <div className="text-sm dark:text-gray-400">
-          <Check size={20} className="inline mr-1"/> {gotIt.length} got it
+          <Check size={20} className="inline mr-1" /> {gotIt.length} got it
         </div>
         <div className="text-sm dark:text-gray-400 ml-4">
-          <Layers size={20} className="inline mr-1"/> {remaining.length} remaining
+          <Layers size={20} className="inline mr-1" /> {remaining.length}{" "}
+          remaining
         </div>
       </div>
 
