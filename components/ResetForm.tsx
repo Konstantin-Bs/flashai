@@ -53,6 +53,7 @@ export default function ResetForm({ onClose, onSuccess }: Props) {
                 <div className="flex items-center justify-between">
                     <h1 className="text-2x1 font-bold mb-4">Reset Password</h1>
                     <button 
+                        aria-label="exit"
                         onClick={onClose}
                         className="text-xl mb-6 cursor-pointer hover:opacity-50"
                     >

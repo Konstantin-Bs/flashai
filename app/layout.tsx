@@ -21,9 +21,9 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
             <Header/>
-            <div className="flex-1">
+            <main className="flex-1">
               {children}
-            </div>
+            </main>
             <Footer/>
           </AuthProvider>
         </ThemeProvider>

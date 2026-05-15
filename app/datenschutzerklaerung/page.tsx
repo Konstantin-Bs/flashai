@@ -109,7 +109,7 @@ export default function Page() {
             <section className="mb-6">
                 <h2 className="text-xl font-semibold mb-3">Präambel</h2>
                 <p className="mb-2">Mit der folgenden Datenschutzerklärung informieren wir Sie darüber, welche personenbezogenen Daten wir verarbeiten, zu welchen Zwecken dies geschieht und in welchem Umfang dies erfolgt. Diese Datenschutzerklärung gilt für unser gesamtes Onlineangebot.</p>
-                <p className="text-sm text-gray-500">Stand: 13. Mai 2026</p>
+                <p className="text-sm dark:text-gray-400">Stand: 13. Mai 2026</p>
             </section>
 
             <section className="mb-6">

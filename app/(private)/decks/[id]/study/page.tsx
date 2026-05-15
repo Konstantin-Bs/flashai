@@ -108,6 +108,7 @@ export default function StudyPage({ params }: { params: Promise<{ id: string }> 
       <div className="flex items-center justify-between px-6 mb-4">
         <h2 className="font-semibold text-2xl">{deckName}</h2>
         <button
+          aria-label="return" 
           onClick={() => router.push("/decks")}
           className="text-sm hover:text-gray-500 cursor-pointer"
         >
@@ -116,10 +117,10 @@ export default function StudyPage({ params }: { params: Promise<{ id: string }> 
       </div>
 
       <div className="flex gap-2 px-6 mb-6">
-        <div className="text-sm text-gray-500">
+        <div className="text-sm dark:text-gray-400">
           <Check size={20} className="inline mr-1"/> {gotIt.length} got it
         </div>
-        <div className="text-sm text-gray-500 ml-4">
+        <div className="text-sm dark:text-gray-400 ml-4">
           <Layers size={20} className="inline mr-1"/> {remaining.length} remaining
         </div>
       </div>

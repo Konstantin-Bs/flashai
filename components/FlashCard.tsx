@@ -26,7 +26,7 @@ export default function FlashCard({ card, index, total, onGotIt, onStillLearning
 
     return (
         <div className="flex flex-col items-center gap-6 p-6 max-w-2x1 mx-auto">
-            <p className="text-sm text-gray-500">{index + 1} / {total}</p>
+            <p className="text-sm dark:text-gray-400">{index + 1} / {total}</p>
 
             <div
                 onClick={() => setFlipped(!flipped)}

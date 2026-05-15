@@ -44,10 +44,11 @@ export function Header() {
                             </Link>
                         </div>
                         <div className="flex items-center gap-5">
-                            <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} className="cursor-pointer">
+                            <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} className="cursor-pointer" aria-label="Toggle theme">
                                 {mounted ? (resolvedTheme === "dark" ? <Sun size={25} strokeWidth={1}/> : <Moon size={25} strokeWidth={1}/>) : <Sun size={25} strokeWidth={1}/>}
                             </button>
                             <button
+                                aria-label="Show Profile"
                                 onClick={() => setShowProfile(true)}
                                 className="w-9 h-9 rounded-full border border-slate-950 dark:border-white bg-white text-slate-950 dark:bg-slate-950 dark:text-white hover:opacity-70 font-medium flex items-center justify-center cursor-pointer"
                             >
@@ -63,7 +64,7 @@ export function Header() {
                             </Link>
                         </div>
                         <div className="flex items-center gap-5">
-                            <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} className="cursor-pointer">
+                            <button onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")} className="cursor-pointer" aria-label="Toggle theme">
                                 {mounted ? (resolvedTheme === "dark" ? <Sun size={25} strokeWidth={1}/> : <Moon size={25} strokeWidth={1}/>) : <Sun size={25} strokeWidth={1}/>}
                             </button>
                             <button

@@ -149,6 +149,7 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
   <div className="max-w-6xl mx-auto p-6">
     <div className="flex items-center justify-between pb-3">
       <button 
+        aria-label="return"
         className="hover:text-gray-400 cursor-pointer"
         onClick={() => router.push("/decks")}
       >
@@ -157,7 +158,7 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
       {!isEditingName && (
         <div className="flex items-center gap-3.5 pl-2">
           <h1 className="text-xl pl-0.5 cursor-default">{deckName}</h1>
-          <button onClick={handleIsEditingName} className="rounded-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-slate-900 p-1 cursor-pointer">
+          <button onClick={handleIsEditingName} className="rounded-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-slate-900 p-1 cursor-pointer" aria-label="Edit deck name">
             <Pencil size={15}/>
           </button>
         </div>
@@ -171,7 +172,7 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
             className="text-xl border rounded-md pl-0.5"
             size={15}
           />
-          <button onClick={handleEditName} className="rounded-sm bg-green-600 hover:bg-green-700 p-1 cursor-pointer">
+          <button onClick={handleEditName} className="rounded-sm bg-green-600 hover:bg-green-700 p-1 cursor-pointer" aria-label="submit new deck name">
             <Check size={15}/>
           </button>
         </div>
@@ -179,6 +180,7 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
       <div className="flex gap-5">
         <div className="relative">
           <button
+            aria-label="download deck"
             onClick={() => setShowDropdown(!showDropdown)}
             className="rounded-sm bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-slate-900 p-1 cursor-pointer"
           >
@@ -251,6 +253,7 @@ export default function DeckDetailPage({ params }: { params: Promise<{ id: strin
             <td className="border border-black dark:border-white/10 p-2">{card.answer}</td>
             <td className="border border-black dark:border-white/10 p-2">
               <button
+                aria-label="delete card"
                 onClick={() => handleDeleteCard(card.id)}
                 className="w-full border border-transparent rounded p-2 cursor-pointer text-red-500 hover:text-red-700"
               >

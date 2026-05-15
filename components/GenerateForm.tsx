@@ -141,7 +141,7 @@ export default function GenerateForm({ deckId, onSuccess, onClose }: Props) {
 
     return (
         <div className="flex flex-col max-w-5xl mx-auto p-6">
-            <button onClick={onClose} className="flex justify-center hover:text-gray-500"><X/></button>
+            <button onClick={onClose} className="flex justify-center hover:text-gray-500" aria-label="exit"><X/></button>
             <div className="mt-8 mb-1 flex gap-1">
                 <button 
                     onClick={() => setInput(0)}

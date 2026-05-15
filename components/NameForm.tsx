@@ -52,6 +52,7 @@ export default function NameForm({ onClose }: Props) {
                 <div className="flex items-center justify-between">
                     <h1 className="text-2x1 font-bold mb-4">New Deck</h1>
                     <button 
+                        aria-label="exit"
                         onClick={onClose}
                         className="text-xl mb-6 cursor-pointer hover:opacity-50"
                     >
