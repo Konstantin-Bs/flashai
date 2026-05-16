@@ -2,7 +2,11 @@ import { google } from "@ai-sdk/google"
 import { generateObject } from "ai"
 import { z } from "zod"
 import { createClient } from "@/lib/supabase-server"
-import { extractTextFromFile } from "@/lib/extract"
+import {
+  extractTextFromFile,
+  isValidFileExtension,
+  isValidFileSize,
+} from "@/lib/extract"
 
 const flashcardSchema = z.object({
   flashcards: z.array(
@@ -38,7 +42,6 @@ export async function POST(request: Request) {
     const files = formData.getAll("files") as File[]
     count = parseInt(formData.get("count") as string)
 
-    const allowedExtensions = [".pdf", ".docx", ".txt", ".md"]
     const extractedTexts: string[] = []
 
     for (const file of files) {
@@ -46,14 +49,14 @@ export async function POST(request: Request) {
         .slice(file.name.lastIndexOf("."))
         .toLowerCase()
 
-      if (!allowedExtensions.includes(extension)) {
+      if (!isValidFileExtension(extension)) {
         return Response.json(
           { error: `Unsupported file type: ${file.name}` },
           { status: 400 }
         )
       }
 
-      if (file.size > 10 * 1024 * 1024) {
+      if (!isValidFileSize(file.size)) {
         return Response.json(
           { error: `File too large: ${file.name}` },
           { status: 400 }

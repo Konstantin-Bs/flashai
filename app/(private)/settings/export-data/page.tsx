@@ -6,6 +6,7 @@ import { Download } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { loadDecks } from "@/lib/storage"
 import { Loader2 } from "lucide-react"
+import { buildExportData } from "@/lib/export"
 
 export default function ExportData() {
   const { user, loading } = useAuth()
@@ -25,22 +26,7 @@ export default function ExportData() {
 
     const decks = await loadDecks(user.id)
 
-    const exportData = {
-      exported_at: new Date().toISOString(),
-      account: {
-        email: user.email,
-        created_at: user.created_at,
-      },
-      decks: decks.map((deck) => ({
-        name: deck.name,
-        created_at: deck.created_at,
-        card: deck.cards.map((card) => ({
-          question: card.question,
-          answer: card.answer,
-          created_at: card.created_at,
-        })),
-      })),
-    }
+    const exportData = buildExportData(user.email!, user.created_at, decks)
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: "application/json",

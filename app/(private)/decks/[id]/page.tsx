@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import GenerateForm from "@/components/GenerateForm"
 import { Pencil, Check, Trash2, ArrowLeft, Download } from "lucide-react"
+import { formatAsTXT, formatAsJson } from "@/lib/export"
 
 export default function DeckDetailPage({
   params,
@@ -98,13 +99,7 @@ export default function DeckDetailPage({
   function handleExportJSON() {
     if (!user) return
 
-    const exportData = {
-      name: deckName,
-      cards: cards.map((card) => ({
-        question: card.question,
-        answer: card.answer,
-      })),
-    }
+    const exportData = formatAsJson(deckName, cards)
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: "application/json",
@@ -120,9 +115,7 @@ export default function DeckDetailPage({
   function handleExportTXT() {
     if (!user) return
 
-    const exportData = cards
-      .map((card) => card.question + "\t" + card.answer)
-      .join("\n")
+    const exportData = formatAsTXT(cards)
 
     const blob = new Blob([exportData], { type: "text/plain" })
     const url = URL.createObjectURL(blob)
