@@ -8,6 +8,7 @@ AI-powered flashcard generator. Paste your notes or upload a PDF - FlashAI gener
 ![Gemini](https://img.shields.io/badge/Gemini-2.5Flash-4285F4)
 ![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E)
 ![Vercel](https://img.shields.io/badge/Deployed-Vercel-black)
+![CI](https://github.com/Konstantin-Bs/flashai/actions/workflows/ci.yml/badge.svg)
 
 **[Live Demo](https://getflashai.vercel.app)**
 
@@ -15,8 +16,8 @@ AI-powered flashcard generator. Paste your notes or upload a PDF - FlashAI gener
 
 ## Screenshot
 
-| Decks | Study Mode |
-|---|---|
+| Decks                             | Study Mode                        |
+| --------------------------------- | --------------------------------- |
 | ![Decks](./screenshots/decks.png) | ![Study](./screenshots/study.png) |
 
 ---
@@ -38,20 +39,22 @@ AI-powered flashcard generator. Paste your notes or upload a PDF - FlashAI gener
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 15 (App Router) |
-| Language | Typescript |
-| Styling | Tailwind CSS v4 |
-| Database | Supabase (PostgreSQL) |
-| Authentication | Supabase Auth |
-| AI | Vercel AI SDK + Google Gemini 2.5 Flash |
-| File Parsing | pdf-parse-fork, mammoth |
-| Deployment | Vercel |
+| Layer          | Technology                              |
+| -------------- | --------------------------------------- |
+| Framework      | Next.js 15 (App Router)                 |
+| Language       | Typescript                              |
+| Styling        | Tailwind CSS v4                         |
+| Database       | Supabase (PostgreSQL)                   |
+| Authentication | Supabase Auth                           |
+| AI             | Vercel AI SDK + Google Gemini 2.5 Flash |
+| File Parsing   | pdf-parse-fork, mammoth                 |
+| Deployment     | Vercel                                  |
+| Testing        | Vitest + GitHub Actions CI              |
 
 ## Getting Started
 
 ### Prerequisites
+
 - Node-js 18+
 - A Supabase Project
 - A Google AI Studio API key
@@ -112,7 +115,7 @@ Open [http://localhost:3000](http://localhost:3000)
 ## Project Structure
 
 ```
-/app                
+/app
   /page.tsx         → landing page (public)
   /(private)        → authenticated pages
     /decks          → deck list and detail pages
@@ -127,6 +130,22 @@ Open [http://localhost:3000](http://localhost:3000)
 /lib                → utilities, Supabase client, auth context
 /public             → static assets, logo
 ```
+
+---
+
+## Testing
+
+Unit tests are written with [Vitest](https://vitest.dev) and run automatically on every push via GitHub Actions.
+
+```bash
+npm test
+```
+
+Tests cover:
+
+- File type and size validation
+- Anki export formatting
+- JSON export structure
 
 ---
 
