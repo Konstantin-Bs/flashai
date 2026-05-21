@@ -155,3 +155,9 @@ Tests cover:
 - [ ] Stripe payments + freemium model
 - [ ] React Native mobile app
 - [ ] German / English language toggle
+
+---
+
+## License
+
+MIT
