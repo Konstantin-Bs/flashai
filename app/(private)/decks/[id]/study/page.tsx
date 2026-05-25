@@ -8,6 +8,16 @@ import { useAuth } from "@/lib/auth-context"
 import { supabase } from "@/lib/supabase"
 import { X, Layers, Check, PartyPopper } from "lucide-react"
 
+//uses Fisher-Yates shuffle
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
 export default function StudyPage({
   params,
 }: {
@@ -47,12 +57,14 @@ export default function StudyPage({
       }
 
       setDeckName(data.name)
-      setCards(data.cards)
-      setRemaining(data.cards)
 
       if (data.cards.length === 0) {
         router.push("/decks")
       }
+
+      const shuffled = shuffleArray(data.cards)
+      setCards(shuffled)
+      setRemaining(shuffled)
     }
 
     fetchDeck()
