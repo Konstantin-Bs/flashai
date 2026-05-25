@@ -20,16 +20,19 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center mt-32 max-w-full gap-12">
-      <h1 className="text-8xl text-center font-sans">
-        Welcome to
-        <span className="block">FlashAI</span>
+    <div className="flex flex-col items-center justify-center mt-32 gap-12">
+      <h1 className="text-7xl max-w-3xl text-center font-semibold">
+        Turn your notes into flashcards in seconds
       </h1>
+      <p className="font-semibold text-2xl max-w-lg text-center">
+        Paste your notes or upload a PDF. AI generates study-ready flashcards
+        instantly
+      </p>
       <button
         onClick={handleSignUp}
-        className="text-4xl text-white font-sans rounded-2xl p-3.5 bg-blue-600/85 hover:bg-blue-600 cursor-pointer"
+        className="text-2xl text-white rounded-md py-3.5 px-5.5 bg-blue-600/85 hover:bg-blue-600 cursor-pointer"
       >
-        Sign Up
+        Get Started
       </button>
     </div>
   )
