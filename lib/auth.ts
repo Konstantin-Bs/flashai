@@ -30,9 +30,6 @@ export async function getUser() {
 }
 
 export async function resetPassword(email: string) {
-  // supabase.auth.resetPasswordForEmail reauthenticates the user
-  // to verify current password before the update.
-  // Supabase doesn't have a dedicated check password function
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
   })

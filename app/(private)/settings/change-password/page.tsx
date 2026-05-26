@@ -52,6 +52,9 @@ export default function ChangePassword() {
     setChangeLoading(true)
     setError("")
 
+    // supabase.auth.signInWithPassword reauthenticates the user
+    // to verify current password before the update.
+    // Supabase doesn't have a dedicated check password function
     const { error: signInError } = await supabase.auth.signInWithPassword({
       email: user.email!,
       password: currentPassword,
