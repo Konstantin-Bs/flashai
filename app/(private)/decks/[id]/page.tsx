@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import GenerateForm from "@/components/GenerateForm"
-import { Pencil, Check, Trash2, ArrowLeft, Download } from "lucide-react"
+import { Pencil, Check, Trash2, ArrowLeft, Download, X } from "lucide-react"
 import { formatAsTXT, formatAsJson } from "@/lib/export"
 
 export default function DeckDetailPage({
@@ -25,6 +25,9 @@ export default function DeckDetailPage({
   const [showDropdown, setShowDropdown] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const [loadingCards, setLoadingCards] = useState(true)
+  const [editingCardId, setEditingCardId] = useState<string | null>(null)
+  const [editQuestion, setEditQuestion] = useState("")
+  const [editAnswer, setEditAnswer] = useState("")
 
   async function fetchDeck() {
     const { data, error } = await supabase
@@ -72,6 +75,43 @@ export default function DeckDetailPage({
       return
     }
     setCards((prev) => prev.filter((card) => card.id !== cardId))
+  }
+
+  function startEditing(cardId: string | undefined) {
+    if (!cardId) return
+    const card = cards.find((c) => c.id === cardId)
+    if (!card) return
+    setEditingCardId(cardId)
+    setEditQuestion(card.question)
+    setEditAnswer(card.answer)
+  }
+
+  async function handleSaveCard(cardId: string | undefined) {
+    if (!cardId) return
+    console.log("saving card:", cardId, editQuestion, editAnswer)
+    const { error } = await supabase
+      .from("cards")
+      .update({ question: editQuestion, answer: editAnswer })
+      .eq("id", cardId)
+
+    console.log("update error:", error)
+
+    if (error) {
+      alert("Something went wrong. Please try again.")
+      return
+    }
+    setCards((prev) =>
+      prev.map((card) =>
+        card.id === cardId
+          ? { ...card, question: editQuestion, answer: editAnswer }
+          : card
+      )
+    )
+    setEditingCardId(null)
+  }
+
+  function handleCancel() {
+    setEditingCardId(null)
   }
 
   async function handleEditName() {
@@ -140,6 +180,12 @@ export default function DeckDetailPage({
 
   return (
     <div className="max-w-6xl mx-auto p-6">
+      {editingCardId && (
+        <div
+          className="fixed inset-0 bg-black/40 z-10"
+          onClick={handleCancel}
+        />
+      )}
       <div className="flex items-center justify-between pb-3">
         <button
           aria-label="return"
@@ -254,30 +300,131 @@ export default function DeckDetailPage({
               <th className="border border-black dark:border-white/30 p-2 text-left">
                 Answer
               </th>
-              <th className="border border-black dark:border-white/30 p-2 text-left"></th>
+              <th className="border border-black dark:border-white/30 p-2 w-10"></th>
+              <th className="border border-black dark:border-white/30 p-2 w-10"></th>
             </tr>
           </thead>
           <tbody>
             {cards.map((card, index) => (
-              <tr key={card.id} className="bg-gray-100 dark:bg-slate-900">
+              <tr
+                key={card.id}
+                className={`bg-gray-100 dark:bg-slate-900 ${editingCardId === card.id ? "relative z-20" : ""}`}
+              >
                 <td className="border border-black dark:border-white/10 p-2 text-center">
                   {index + 1}
                 </td>
-                <td className="border border-black dark:border-white/10 p-2">
-                  {card.question}
-                </td>
-                <td className="border border-black dark:border-white/10 p-2">
-                  {card.answer}
-                </td>
-                <td className="border border-black dark:border-white/10 p-2">
-                  <button
-                    aria-label="delete card"
-                    onClick={() => handleDeleteCard(card.id)}
-                    className="w-full border border-transparent rounded p-2 cursor-pointer text-red-500 hover:text-red-700"
-                  >
-                    <Trash2 />
-                  </button>
-                </td>
+
+                {editingCardId === card.id ? (
+                  <>
+                    <td className="border border-black dark:border-white/10 p-2">
+                      <textarea
+                        value={editQuestion}
+                        onChange={(e) => setEditQuestion(e.target.value)}
+                        onInput={(e) => {
+                          const target = e.target as HTMLTextAreaElement
+                          target.style.height = "auto"
+                          target.style.height = `${target.scrollHeight}px`
+                        }}
+                        style={{ height: "auto" }}
+                        ref={(el) => {
+                          if (el) {
+                            el.style.height = "auto"
+                            el.style.height = `${el.scrollHeight}px`
+                          }
+                        }}
+                        className="w-full bg-transparent outline-none resize-none overflow-hidden"
+                        rows={1}
+                      />
+                    </td>
+                    <td className="border border-black dark:border-white/10 p-2">
+                      <textarea
+                        value={editAnswer}
+                        onChange={(e) => setEditAnswer(e.target.value)}
+                        onInput={(e) => {
+                          const target = e.target as HTMLTextAreaElement
+                          target.style.height = "auto"
+                          target.style.height = `${target.scrollHeight}px`
+                        }}
+                        style={{ height: "auto" }}
+                        ref={(el) => {
+                          if (el) {
+                            el.style.height = "auto"
+                            el.style.height = `${el.scrollHeight}px`
+                          }
+                        }}
+                        className="w-full bg-transparent outline-none resize-none overflow-hidden"
+                        rows={1}
+                      />
+                    </td>
+                    <td className="border border-black dark:border-white/10 p-2">
+                      <button
+                        aria-label="edit card"
+                        onClick={() => handleSaveCard(card.id)}
+                        className="border border-transparent rounded p-2 cursor-pointer text-green-500 hover:text-green-700"
+                      >
+                        <Check />
+                      </button>
+                    </td>
+                    <td className="border border-black dark:border-white/10 p-2">
+                      <button
+                        aria-label="delete card"
+                        onClick={() => handleCancel()}
+                        className="border border-transparent rounded p-2 cursor-pointer text-red-500 hover:text-red-700"
+                      >
+                        <X />
+                      </button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    <td className="border border-black dark:border-white/10 p-2">
+                      <textarea
+                        value={card.question}
+                        readOnly
+                        className="w-full bg-transparent outline-none resize-none overflow-hidden cursor-default"
+                        ref={(el) => {
+                          if (el) {
+                            el.style.height = "auto"
+                            el.style.height = `${el.scrollHeight}px`
+                          }
+                        }}
+                        rows={1}
+                      />
+                    </td>
+                    <td className="border border-black dark:border-white/10 p-2">
+                      <textarea
+                        value={card.answer}
+                        readOnly
+                        className="w-full bg-transparent outline-none resize-none overflow-hidden cursor-default"
+                        ref={(el) => {
+                          if (el) {
+                            el.style.height = "auto"
+                            el.style.height = `${el.scrollHeight}px`
+                          }
+                        }}
+                        rows={1}
+                      />
+                    </td>
+                    <td className="border border-black dark:border-white/10 p-2">
+                      <button
+                        aria-label="edit card"
+                        onClick={() => startEditing(card.id)}
+                        className="border border-transparent rounded p-2 cursor-pointer text-blue-500 hover:text-blue-700"
+                      >
+                        <Pencil />
+                      </button>
+                    </td>
+                    <td className="border border-black dark:border-white/10 p-2">
+                      <button
+                        aria-label="delete card"
+                        onClick={() => handleDeleteCard(card.id)}
+                        className="border border-transparent rounded p-2 cursor-pointer text-red-500 hover:text-red-700"
+                      >
+                        <Trash2 />
+                      </button>
+                    </td>
+                  </>
+                )}
               </tr>
             ))}
           </tbody>
